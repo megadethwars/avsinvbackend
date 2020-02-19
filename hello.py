@@ -6,6 +6,6 @@ def hello():
     return "Hello Flask"
 
 
-myapp.route("/test")
-def hello():
+@myapp.route("/test")
+def test():
     return "Hello test"
