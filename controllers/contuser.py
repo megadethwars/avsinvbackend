@@ -61,7 +61,7 @@ def Postuser():
     print (request.is_json)
     content = request.get_json()
     print (content)
-    
+    ##starting to create user to sql
     return 'OK', 201
 
 
