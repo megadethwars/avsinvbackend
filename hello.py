@@ -9,3 +9,6 @@ def hello():
 @myapp.route("/test")
 def test():
     return "Hello test"
+
+if __name__== '__main__':
+    myapp.run()
