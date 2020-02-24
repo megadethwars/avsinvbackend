@@ -23,6 +23,29 @@ class UserDB():
             print("Error de SQL")
             return None
 
+
+    
+    @staticmethod
+    def GetUser(name):
+        
+        print("starting")
+        try:
+            ServiceSQL.getConector().execute("SELECT * from Usuario where nombre = '" + name + "'")
+            print("queried")
+            row = ServiceSQL.getConector().fetchall()
+            data = []
+            print("get rows")
+            for r in row:
+                data.append([x for x in r])
+
+            datos = json.dumps(data)
+            
+            print(json.dumps(data))
+            return datos
+        except:
+            print("Error de SQL")
+            return None
+
         
         
 

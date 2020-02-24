@@ -1,4 +1,5 @@
-from flask import Flask,Response,abort
+from flask import Flask,Response,abort,request
+
 import pyodbc
 from test import MyClass
 from data.Service import ServiceSQL 
