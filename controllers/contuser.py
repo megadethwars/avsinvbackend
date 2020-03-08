@@ -40,9 +40,9 @@ def GetUsers():
         data = UserDB.executePost()
 
         if data == None:
-            int_server('message that appears in body')
-        elif data == []:
-            bad_request('message that appears in body')
+            return int_server('server error')
+        elif data == 1:
+            return not_found('not found')
 
         return data,200, {'ContentType':'application/json'}
 
@@ -109,7 +109,7 @@ def Postuser():
 
 @app.route('/putuser/<string:name>',methods = ['PUT'])
 def Putuser(name):
-    print("testing")
+    
     try:
 
         if request.is_json:
@@ -136,3 +136,26 @@ def Putuser(name):
         return int_server('server error')
 
    
+
+@app.route('/deluser/<string:name>',methods = ['DELETE'])
+def deluser(name):
+    try:
+          
+        status=UserDB.delUser(name)
+
+        if status == 0:
+            return ok_server_put('ok')
+
+        elif status == 1:
+
+            return not_found('not found')
+
+        else:
+
+            return int_server('server error')
+
+        
+        
+    except:
+        return int_server('server error')
+        

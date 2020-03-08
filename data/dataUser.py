@@ -11,6 +11,10 @@ class UserDB():
             ServiceSQL.getConector().execute("SELECT * from Usuario")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
+
+            if len(row) == 0:
+                return 1
+
             data = []
             print(row)
             for r in row:
@@ -33,7 +37,7 @@ class UserDB():
     @staticmethod
     def GetUser(name):
         
-        print("starting")
+       
         try:
             ServiceSQL.getConector().execute("SELECT * from Usuario where nombre = '" + name + "'")
             print("queried")
@@ -117,6 +121,29 @@ class UserDB():
             return 2        
        
                 
+
+    @staticmethod
+    def delUser(usuario):
+        print(usuario)
+        try:
+            ServiceSQL.getConector().execute("SELECT * from Usuario where nombre = '" + usuario + "'")
+            row = ServiceSQL.getConector().fetchall()
+            print(row)
+            if len(row) >= 0:
+
+                #delete user
+
+                ServiceSQL.getConector().execute("Delete from Usuario WHERE nombre = '" + usuario + "'")
+                ServiceSQL.getcnxn().commit()
+                print('deleted')
+                return 0
+            else:
+                return 1
+    
+        except:
+            print('server error')
+            return 2 
+            
 
 #INSERT INTO Usuario (ID,nombre,apellido_materno,apellido_paterno,contrasena,tipoUsuario,fechaContratacion,telefono,correo) 
 #VALUES ('12312312', 'rody', 'vazquez', 'lopez','123456','administrador','2019-03-05','5567890098','rodrigo2020@hotmail.com');
