@@ -33,6 +33,11 @@ def ok_server_put(message='ok'):
     response.status_code = 200
     return response
 
+def unauthorized(message = 'unauthorized'):
+    response = jsonify({'message': message})
+    response.status_code = 401
+    return response
+
 @app.route('/users')
 def GetUsers():
 
@@ -88,6 +93,9 @@ def Postuser():
                 return ok_server_post()
             else:
                 return int_server('server error')
+        
+        else:
+            return bad_request('bad request')
 
     except:        
         return int_server('server error')
@@ -153,9 +161,37 @@ def deluser(name):
         else:
 
             return int_server('server error')
-
-        
-        
+  
     except:
         return int_server('server error')
         
+
+@app.route('/loginpre', methods=['GET', 'POST'])
+def loginpre():
+
+    try:
+        
+        if request.method == 'POST':
+            print(request.is_json)
+            if request.is_json:
+                content = request.get_json()
+                status = UserDB.loginprev(content)
+                print(status)
+                if status == 0:
+                    return ok_server_post('OK')
+                
+                elif status == 2:
+
+                    return unauthorized('unauthorized')
+                
+                elif status == 1:
+                    return not_found('not found')
+                
+                else:
+                    return int_server('server error')
+        else:
+            return bad_request('bad request')
+
+    except:        
+        return int_server('server error')
+

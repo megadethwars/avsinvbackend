@@ -144,6 +144,34 @@ class UserDB():
             print('server error')
             return 2 
             
+    
+    @staticmethod
+    def loginprev(usuario):
+        try:
+            
+                   
+            ServiceSQL.getConector().execute("select nombre,contrasena from Usuario where nombre = '" + usuario['nombre'] + "'")
+            
+            row = ServiceSQL.getConector().fetchall()
+                    
+            print(row[0][1])
+            
+
+            if len(row) == 0:
+                return 1
+                                 
+
+            if usuario['contrasena'] == row[0][1]:
+                return 0
+            
+            else:
+                return 2
+            
+        except ValueError:
+            print("error de transaccion")
+            return 3
+        
+
 
 #INSERT INTO Usuario (ID,nombre,apellido_materno,apellido_paterno,contrasena,tipoUsuario,fechaContratacion,telefono,correo) 
 #VALUES ('12312312', 'rody', 'vazquez', 'lopez','123456','administrador','2019-03-05','5567890098','rodrigo2020@hotmail.com');
