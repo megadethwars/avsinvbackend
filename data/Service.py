@@ -6,6 +6,7 @@ class ServiceSQL(object):
 
     Isconnected = False
     conector = None
+    cnxn = None
 
     def __init__(self):
         self._bar = 10
@@ -54,6 +55,7 @@ class ServiceSQL(object):
     def InitConexion():
         global Isconnected
         global conector
+        global cnxn
         try:
             server = 'inventarioavs.database.windows.net'
             database = 'inventarioavs'
@@ -65,12 +67,16 @@ class ServiceSQL(object):
             
             print("already connected")     
             
-        except expression as identifier:
-            print(identifier)
+        except:
+            print("error de conexion")
 
     @staticmethod
     def getConector():
-        return conector        
+        return conector      
+
+    @staticmethod
+    def getcnxn():
+        return cnxn  
 
         
 
