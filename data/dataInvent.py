@@ -117,7 +117,7 @@ class InventDB():
                 
             }
 
-            datos = json.dumps(objectodevice)
+            datos = json.dumps(items)
             
             return datos
         except ValueError:

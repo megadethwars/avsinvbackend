@@ -20,6 +20,7 @@ import testroute
 import testroute2
 from controllers import contuser
 from controllers import continvent
+from controllers import contreport
 
 @app.route("/")
 def hello():
