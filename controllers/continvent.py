@@ -143,21 +143,21 @@ def PutDevice(name):
 def deldevice(name):
     try:
           
-        status=UserDB.delUser(name)
+        status=InventDB.delDevice(name)
 
         if status == 0:
-            return ok_server_put('ok')
+            return Httpstatus.ok_server_put('ok')
 
         elif status == 1:
 
-            return not_found('not found')
+            return Httpstatus.not_found('not found')
 
         else:
 
-            return int_server('server error')
+            return Httpstatus.int_server('server error')
   
     except:
-        return int_server('server error')
+        return Httpstatus.int_server('server error')
         
 
 

@@ -216,17 +216,17 @@ class InventDB():
                 
 
     @staticmethod
-    def delDevice(usuario):
-        print(usuario)
+    def delDevice(codigo):
+        print(codigo)
         try:
-            ServiceSQL.getConector().execute("SELECT * from Usuario where nombre = '" + usuario + "'")
+            ServiceSQL.getConector().execute("SELECT * from InventDB where codigo = '" + codigo + "'")
             row = ServiceSQL.getConector().fetchall()
-            print(row)
-            if len(row) >= 0:
+            print(len(row))
+            if len(row) > 0:
 
                 #delete user
 
-                ServiceSQL.getConector().execute("Delete from Usuario WHERE nombre = '" + usuario + "'")
+                ServiceSQL.getConector().execute("Delete from InventDB WHERE codigo = '" + codigo + "'")
                 ServiceSQL.getcnxn().commit()
                 print('deleted')
                 return 0

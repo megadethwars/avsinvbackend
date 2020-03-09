@@ -129,7 +129,7 @@ class UserDB():
             ServiceSQL.getConector().execute("SELECT * from Usuario where nombre = '" + usuario + "'")
             row = ServiceSQL.getConector().fetchall()
             print(row)
-            if len(row) >= 0:
+            if len(row) > 0:
 
                 #delete user
 
