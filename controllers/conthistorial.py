@@ -23,3 +23,26 @@ def GetMovements():
     except:
         print("error")
         return Httpstatus.int_server('server error')
+
+
+@app.route('/postmove', methods = ['POST'])
+def PostHistorial():
+
+    try:
+        print(request.is_json)
+        if request.is_json:
+            content = request.get_json()
+            
+            
+            status = HistorialDB.postHistorial(content)
+
+            if status == 0:
+                return Httpstatus.ok_server_post()
+            else:
+                return Httpstatus.int_server('server error')
+        
+        else:
+            return Httpstatus.bad_request('bad request')
+
+    except:        
+        return Httpstatus.int_server('server error')
