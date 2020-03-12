@@ -62,7 +62,7 @@ class ReportDB():
                 
             }
 
-            datos = json.dumps(reportedevice)
+            datos = json.dumps(items)
             
             return datos
         except ValueError:

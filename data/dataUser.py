@@ -69,7 +69,7 @@ class UserDB():
                 "correo": item[8]
             }
 
-            datos = json.dumps(objectouser)
+            datos = json.dumps(items)
             
             #print(json.dumps(data))
             return datos

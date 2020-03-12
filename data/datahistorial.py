@@ -42,7 +42,7 @@ def strselect(argumentos,cols):
     for column in argumentos:
 
         
-        if column != "":
+        if column != "" and column != 'null':
             
             if isfirst==True:
                 select+=" and " + cols[count] + " = '" + column + "' " 
@@ -98,6 +98,49 @@ class HistorialDB():
             return 2
 
     
+    @staticmethod
+    def getHistorialbysearch(listaargs):
+        print("starting")
+        try:
+
+            columnas = ["movimiento","lugar","usuario","producto","fecha","modelo","marca","codigo","serie"]
+
+            strsel =strselect(listaargs,columnas)
+
+
+
+            ServiceSQL.getConector().execute(strsel)
+            print("queried")
+            row = ServiceSQL.getConector().fetchall()
+
+            if len(row) == 0:
+                return 1
+
+            columns= []
+            
+            for r in ServiceSQL.getConector().columns(table='Movimientos'):               
+                columns.append(r.column_name)
+            
+            items = []
+
+            movobj = {}
+
+                                
+            for item in row:
+                cont = 0
+                movobj = {}
+                for column in columns:
+                    movobj[column] = item[cont]
+                    cont=cont+1
+
+                items.append(movobj)      
+
+            datos = json.dumps(items)
+            
+            return datos
+        except ValueError:
+            print(ValueError)
+            return 2
     
 
     @staticmethod
