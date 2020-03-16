@@ -30,7 +30,7 @@ class UserDB():
             return datos
         except:
             print("Error de SQL")
-            return None
+            return 2
 
 
     

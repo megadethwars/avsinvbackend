@@ -67,7 +67,7 @@ def GetUser(name):
             return not_found('not found')
 
 
-        if data == None:
+        if data == 2:
             return int_server('message that appears in body')
 
           

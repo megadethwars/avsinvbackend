@@ -22,6 +22,7 @@ from controllers import contuser
 from controllers import continvent
 from controllers import contreport
 from controllers import conthistorial
+from controllers import contRoles
 
 @app.route("/")
 def hello():
