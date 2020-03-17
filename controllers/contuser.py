@@ -38,13 +38,14 @@ def unauthorized(message = 'unauthorized'):
     response.status_code = 401
     return response
 
+
 @app.route('/users')
 def GetUsers():
 
     try:
-        data = UserDB.executePost()
+        data = UserDB.GetUsers()
 
-        if data == None:
+        if data == 2:
             return int_server('server error')
         elif data == 1:
             return not_found('not found')
@@ -79,6 +80,8 @@ def GetUser(name):
     
 
     return 'postuser'
+
+    
 
 @app.route('/postUser', methods = ['POST'])
 def Postuser():

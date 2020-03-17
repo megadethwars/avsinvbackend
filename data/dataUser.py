@@ -1,11 +1,73 @@
 from data.Service import ServiceSQL
 import json
+from data.Service import ServiceSQL 
+
+def strinsert(table,cols,obj):
+
+    table = str(table)
+    insertcmd = "insert into  " + table + " ("
+    print(insertcmd)
+    cont = 0
+
+    for column in cols:
+        insertcmd+="" + column + ","
+        cont=cont+1
+    insertcmd=insertcmd[0:-1]
+    insertcmd+=") values ("
+
+    cont2=0
+    for value in obj.values():
+
+        if type(value) is int:
+            
+            insertcmd+= str(value)+","
+        else:
+            insertcmd+="'" + value + "',"
+
+        
+        cont2=cont2+1
+
+    insertcmd=insertcmd[0:-1]
+    insertcmd+=")"    
+
+    print(insertcmd)
+    return insertcmd
+
+
+def strselect(table,argumentos,cols):
+    select = ""
+
+    select = str(select)
+
+    select = "select * from "+table+" where "
+
+    isfirst=False
+    count = 0
+
+
+    for column in argumentos:
+
+        
+        if column != "" and column != 'null':
+            
+            if isfirst==True:
+                select+=" and " + cols[count] + " = '" + column + "' " 
+            else:   
+                select+="" + cols[count] + " = '" + column + "' " 
+
+            isfirst = True
+        
+        count=count + 1
+
+    print(select)
+    return select
+
 
 class UserDB():
 
 
     @staticmethod
-    def executePost():
+    def GetUsers():
         print("starting")
         try:
             ServiceSQL.getConector().execute("SELECT * from Usuario")
@@ -29,11 +91,12 @@ class UserDB():
             #print(json.dumps(data))
             return datos
         except:
+            
             print("Error de SQL")
             return 2
 
-
     
+
     @staticmethod
     def GetUser(name):
         
@@ -77,17 +140,33 @@ class UserDB():
             print("Error de SQL")
             return None
 
-        
-        
+              
 
     @staticmethod
     def postUser(usuario):
         try:
             #print(usuario)
-            
-            
-            ServiceSQL.getConector().execute("INSERT INTO Usuario (ID,nombre,apellido_materno,apellido_paterno,contrasena,tipoUsuario,fechaContratacion,telefono,correo) VALUES ('" + usuario['ID'] + "','" + usuario['nombre'] + "','" + usuario['apellido_materno'] + "','" + usuario['apellido_paterno'] + "','" + usuario['contrasena'] + "','" + usuario['tipoUsuario'] + "','" + usuario['fechaContratacion'] + "','" + usuario['telefono'] + "','" + usuario['correo'] + "')")
+
+            columnas= []
+           
+            for r in ServiceSQL.getConector().columns(table='Usuarios'):  
+
+                if r.column_name != 'ID':
+                    if r.column_name != 'fecha':                        
+                        columnas.append(r.column_name)
+                
+            #temporal
+
+                    
+
+            print(columnas)
+            cmdinsert = strinsert('Usuarios',columnas,usuario)
+
+            ServiceSQL.getConector().execute(cmdinsert)
             ServiceSQL.getcnxn().commit()
+
+            #ServiceSQL.getConector().execute("INSERT INTO Usuario (ID,nombre,apellido_materno,apellido_paterno,contrasena,tipoUsuario,fechaContratacion,telefono,correo) VALUES ('" + usuario['ID'] + "','" + usuario['nombre'] + "','" + usuario['apellido_materno'] + "','" + usuario['apellido_paterno'] + "','" + usuario['contrasena'] + "','" + usuario['tipoUsuario'] + "','" + usuario['fechaContratacion'] + "','" + usuario['telefono'] + "','" + usuario['correo'] + "')")
+            #ServiceSQL.getcnxn().commit()
 
 
             return 0

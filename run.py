@@ -3,7 +3,7 @@ from flask import Flask,Response,abort,request
 import pyodbc
 from test import MyClass
 from data.Service import ServiceSQL 
-
+import threading
 
 
 #a=MyClass()
@@ -11,6 +11,9 @@ from data.Service import ServiceSQL
 #a.foo()
 
 ServiceSQL.InitConexion()
+health = threading.Thread(target=ServiceSQL.reconnect,daemon=True)
+health.start()
+
 app = Flask(__name__)
 
 
@@ -27,7 +30,13 @@ from controllers import contLugares
 
 @app.route("/")
 def hello():
-    return "Hello Flask"
+    status = ServiceSQL.reconncetOnce()
+
+    if status==True:
+        return "SQL Connected"
+    else:
+
+        return "SQL Disconnected"
 
 
 @app.route("/test")

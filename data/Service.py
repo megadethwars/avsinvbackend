@@ -1,4 +1,6 @@
 import pyodbc
+import time
+
 
 class ServiceSQL(object):
 
@@ -25,8 +27,56 @@ class ServiceSQL(object):
             print("already connected")     
             self.isCon = True   
         except:
+            self.isCon = False 
             print("error de conexion")
         
+    @staticmethod
+    def reconnect():
+        global Isconnected
+        global conector
+        global cnxn
+        while True:
+            time.sleep(1800)
+            try:
+                print('reconectando')
+                server = 'inventarioavs.database.windows.net'
+                database = 'inventarioavs'
+                username = 'forrerunner97'
+                password = 'Asterisco97'
+                driver= '{ODBC Driver 17 for SQL Server}'
+                cnxn = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password)
+                conector = cnxn.cursor()
+                
+                print("already connected")     
+                Isconnected = True
+            except:
+                Isconnected = False
+                print("error de conexion")
+
+
+    def reconncetOnce():
+        global Isconnected
+        global conector
+        global cnxn
+        
+        time.sleep(1)
+        try:
+            print('reconectando')
+            server = 'inventarioavs.database.windows.net'
+            database = 'inventarioavs'
+            username = 'forrerunner97'
+            password = 'Asterisco97'
+            driver= '{ODBC Driver 17 for SQL Server}'
+            cnxn = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password)
+            conector = cnxn.cursor()
+            
+            print("already connected")     
+            Isconnected = True
+            return Isconnected
+        except:
+            Isconnected = False
+            print("error de conexion")
+            return Isconnected
 
     @property
     def bar(self):
