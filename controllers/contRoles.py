@@ -4,6 +4,7 @@ from run import app
 from data.Service import ServiceSQL
 from data.dataRoles import RoleDB
 from status.status import Httpstatus
+import traceback
 
 @app.route('/roles')
 def GetRoles():
@@ -61,7 +62,8 @@ def PostRole():
         else:
             return Httpstatus.bad_request('bad request')
 
-    except:        
+    except Exception as e:  
+        print(e)      
         return Httpstatus.int_server('server error')
 
 

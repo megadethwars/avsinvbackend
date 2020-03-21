@@ -118,7 +118,7 @@ def PutDevice(name):
 
             content = request.json
 
-            status=InventDB.putDevice(content)
+            status=InventDB.putDevice(content,name)
 
             if status == 0:
                 return Httpstatus.ok_server_put('ok')
@@ -134,7 +134,8 @@ def PutDevice(name):
         else:
             return Httpstatus.bad_request('bad request')
         
-    except:
+    except Exception as e:
+        print(e)
         return int_server('server error')
 
    

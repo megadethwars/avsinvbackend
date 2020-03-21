@@ -1,6 +1,6 @@
 import pyodbc
 import time
-
+import traceback
 
 class ServiceSQL(object):
 
@@ -16,7 +16,7 @@ class ServiceSQL(object):
         global cursor 
         try:
 
-            server = 'inventarioavs.database.windows.net'
+            server = 'inventarioavs1.database.windows.net'
             database = 'inventarioavs'
             username = 'forrerunner97'
             password = 'Asterisco97'
@@ -26,9 +26,10 @@ class ServiceSQL(object):
             
             print("already connected")     
             self.isCon = True   
-        except:
+        except Exception as e:
             self.isCon = False 
             print("error de conexion")
+            print(e)
         
     @staticmethod
     def reconnect():
@@ -39,7 +40,7 @@ class ServiceSQL(object):
             time.sleep(1800)
             try:
                 print('reconectando')
-                server = 'inventarioavs.database.windows.net'
+                server = 'inventarioavs1.database.windows.net'
                 database = 'inventarioavs'
                 username = 'forrerunner97'
                 password = 'Asterisco97'
@@ -62,7 +63,7 @@ class ServiceSQL(object):
         time.sleep(1)
         try:
             print('reconectando')
-            server = 'inventarioavs.database.windows.net'
+            server = 'inventarioavs1.database.windows.net'
             database = 'inventarioavs'
             username = 'forrerunner97'
             password = 'Asterisco97'
@@ -107,7 +108,7 @@ class ServiceSQL(object):
         global conector
         global cnxn
         try:
-            server = 'inventarioavs.database.windows.net'
+            server = 'inventarioavs1.database.windows.net'
             database = 'inventarioavs'
             username = 'forrerunner97'
             password = 'Asterisco97'
@@ -117,8 +118,9 @@ class ServiceSQL(object):
             
             print("already connected")     
             
-        except:
+        except Exception as e:
             print("error de conexion")
+            print(e)
 
     @staticmethod
     def getConector():

@@ -1,6 +1,9 @@
 from data.Service import ServiceSQL
 import json
 from data.Service import ServiceSQL 
+import traceback
+from datetime import date, datetime
+
 
 def strinsert(table,cols,obj):
 
@@ -63,6 +66,57 @@ def strselect(table,argumentos,cols):
     return select
 
 
+
+def cmdinsert(table,objeto):
+    table = str(table)
+    TABLE_NAME = table
+
+    sqlstatement = ''
+
+    keylist = "("
+    valuelist = "("
+    firstPair = True
+    for key, value in objeto.items():
+        if key !='ID' and key !='fecha' and key!='tipoUsuario':
+            if not firstPair:
+                keylist += ", "
+                valuelist += ", "
+            firstPair = False
+            keylist += key
+            if type(value) is str:
+                valuelist += "'" + value + "'"
+            else:
+                valuelist += str(value)
+    keylist += ")"
+    valuelist += ")"
+
+    sqlstatement += "INSERT INTO " + TABLE_NAME + " " + keylist + " VALUES " + valuelist
+    print(sqlstatement)
+    return sqlstatement
+
+
+def cmdupdate(table,objeto,name):
+    table = str(table)
+    TABLE_NAME = table
+
+    sqlstatement = ''
+
+    
+    valuelist = ""
+    firstPair = True
+    for key, value in objeto.items():
+        if key !='ID' and key !='fecha' and key!='tipoUsuario' and key!='rol':
+            if type(value) is int:
+                valuelist+=key + " = "+ str(value) + ","
+            else:
+                valuelist+=key + " = "+ "'" + value + "'" + ","
+    
+    valuelist = valuelist[0:-1]
+    sqlstatement += "UPDATE " + TABLE_NAME + " SET " +valuelist + " WHERE ID = " +  "" + name + ""
+    
+    return sqlstatement
+
+
 class UserDB():
 
 
@@ -70,29 +124,46 @@ class UserDB():
     def GetUsers():
         print("starting")
         try:
-            ServiceSQL.getConector().execute("SELECT * from Usuario")
+            ServiceSQL.getConector().execute("SELECT Usuarios.ID,Usuarios.nombre,Usuarios.apellido_paterno,Usuarios.apellido_materno,Usuarios.IDtipoUsuario,Usuarios.fecha,Usuarios.telefono,Usuarios.correo,Roles.rol from Usuarios inner join Roles on Usuarios.IDtipoUsuario = Roles.ID")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
             if len(row) == 0:
                 return 1
 
-            data = []
-            print(row)
-            for r in row:
-                data.append([x for x in r])
+            #data = []
+            #print(row)
+            #for r in row:
+            #    data.append([x for x in r])
 
-            items = []
-            for item in row:
-                items.append({'ID':item[0],'nombre':item[1],'apellido_materno':item[2],'apellido_paterno':item[3],'contrasena':item[4],'tipoUsuario':item[5],'fechaContratacion':item[6],'telefono':item[7],'correo':item[8]})
+            #items = []
+            #for item in row:
+            #    items.append({'ID':item[0],'nombre':item[1],'apellido_materno':item[2],'apellido_paterno':item[3],'contrasena':item[4],'tipoUsuario':item[5],'fechaContratacion':item[6],'telefono':item[7],'correo':item[8]})
 
 
-            datos = json.dumps(items)
+            #datos = json.dumps(items)
+
+
+            rows = [x for x in row]
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            filas = []
+            for row in rows:
+                fila = {}
+                for prop, val in zip(cols, row):
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
+
+                filas.append(fila)
+
+           
+            datos = json.dumps(filas)
             #print(json.dumps(data))
             return datos
-        except:
+        except Exception as e:
             
-            print("Error de SQL")
+            print(e)
             return 2
 
     
@@ -102,37 +173,29 @@ class UserDB():
         
        
         try:
-            ServiceSQL.getConector().execute("SELECT * from Usuario where nombre = '" + name + "'")
+            ServiceSQL.getConector().execute("SELECT Usuarios.ID,Usuarios.nombre,Usuarios.apellido_paterno,Usuarios.apellido_materno,Usuarios.IDtipoUsuario,Usuarios.fecha,Usuarios.telefono,Usuarios.correo,Roles.rol from Usuarios inner join Roles on Usuarios.IDtipoUsuario = Roles.ID where nombre = '" + name + "'")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
             
             if len(row) == 0:
                 return 1
             
-            data = []
-            items = []
-            print(row)
-            #for r in row:
-            #    data.append([x for x in r])
+            rows = [x for x in row]
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            filas = []
+            for row in rows:
+                fila = {}
+                for prop, val in zip(cols, row):
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
 
-            
+                filas.append(fila)
 
-            for item in row:
-                items.append({'ID':item[0],'nombre':item[1],'apellido_materno':item[2],'apellido_paterno':item[3],'contrasena':item[4],'tipoUsuario':item[5],'fechaContratacion':item[6],'telefono':item[7],'correo':item[8]})
+            print(filas)
 
-            objectouser = {
-                "ID": item[0],
-                "nombre": item[1],
-                "apellido_materno": item[2],
-                "apellido_paterno": item[3],
-                "contrasena": item[4],
-                "tipoUsuario": item[5],
-                "fechaContratacion": item[6],
-                "telefono": item[7],
-                "correo": item[8]
-            }
-
-            datos = json.dumps(items)
+            datos = json.dumps(filas)
             
             #print(json.dumps(data))
             return datos
@@ -157,12 +220,11 @@ class UserDB():
                 
             #temporal
 
-                    
-
+           
             print(columnas)
-            cmdinsert = strinsert('Usuarios',columnas,usuario)
-
-            ServiceSQL.getConector().execute(cmdinsert)
+            #cmdinsert = strinsert('Usuarios',columnas,usuario)
+            sqlinsert = cmdinsert("Usuarios",usuario)
+            ServiceSQL.getConector().execute(sqlinsert)
             ServiceSQL.getcnxn().commit()
 
             #ServiceSQL.getConector().execute("INSERT INTO Usuario (ID,nombre,apellido_materno,apellido_paterno,contrasena,tipoUsuario,fechaContratacion,telefono,correo) VALUES ('" + usuario['ID'] + "','" + usuario['nombre'] + "','" + usuario['apellido_materno'] + "','" + usuario['apellido_paterno'] + "','" + usuario['contrasena'] + "','" + usuario['tipoUsuario'] + "','" + usuario['fechaContratacion'] + "','" + usuario['telefono'] + "','" + usuario['correo'] + "')")
@@ -170,33 +232,34 @@ class UserDB():
 
 
             return 0
-        except ValueError:
-            print("error de transaccion")
+        except Exception as e:
+            print(e)
             return 2
         
 
 
     @staticmethod
-    def putUser(usuario):
+    def putUser(usuario,name):
         #check if use exist
         print(usuario)
         try:
-            ServiceSQL.getConector().execute("SELECT * from Usuario where nombre = '" + usuario['nombre'] + "'")
+            ServiceSQL.getConector().execute("SELECT * from Usuarios where nombre = '" + usuario['nombre'] + "'")
             row = ServiceSQL.getConector().fetchall()
-            print(row)
+            
             if len(row) >= 0:
 
                 #update user
+                sqlupdate = cmdupdate("Usuarios",usuario,name)
 
-                ServiceSQL.getConector().execute("UPDATE Usuario SET apellido_materno = '" + usuario['apellido_materno'] + "', apellido_paterno = '" + usuario['apellido_paterno'] + "',tipoUsuario = '" + usuario['tipoUsuario'] + "',telefono = '" + usuario['telefono'] + "',correo = '" + usuario['correo'] + "'    WHERE nombre = '" + usuario['nombre'] + "'")
+                ServiceSQL.getConector().execute(sqlupdate)
                 ServiceSQL.getcnxn().commit()
                 print('updated')
                 return 0
             else:
                 return 1
     
-        except:
-            print('server error')
+        except Exception as e:
+            print(e)
             return 2        
        
                 
@@ -205,14 +268,25 @@ class UserDB():
     def delUser(usuario):
         print(usuario)
         try:
-            ServiceSQL.getConector().execute("SELECT * from Usuario where nombre = '" + usuario + "'")
+            ServiceSQL.getConector().execute("SELECT * from Usuarios where nombre = '" + usuario + "'")
             row = ServiceSQL.getConector().fetchall()
             print(row)
-            if len(row) > 0:
+            data = []
+            
+            for r in row:
+                data.append([x for x in r])
+
+          
+            items = []
+            for item in row:
+                items.append(item[0])
+
+                
+            if item[0] > 0:
 
                 #delete user
 
-                ServiceSQL.getConector().execute("Delete from Usuario WHERE nombre = '" + usuario + "'")
+                ServiceSQL.getConector().execute("Delete from Usuarios WHERE nombre = '" + usuario + "'")
                 ServiceSQL.getcnxn().commit()
                 print('deleted')
                 return 0

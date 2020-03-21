@@ -1,5 +1,65 @@
 from data.Service import ServiceSQL
 import json
+import traceback
+from datetime import date, datetime
+
+def cmdinsert(table,objeto):
+    table = str(table)
+    TABLE_NAME = table
+
+    sqlstatement = ''
+
+    keylist = "("
+    valuelist = "("
+    firstPair = True
+    for key, value in objeto.items():
+        if key !='ID' and key !='fecha' and key!='origen' and key!='lugar' and key!='Fecha':
+            if not firstPair:
+                keylist += ", "
+                valuelist += ", "
+            firstPair = False
+            keylist += key
+            
+            if type(value) is str:
+                valuelist += "'" + value + "'"
+            
+            elif type(value) == None:
+                print("nulo")
+                valuelist += ""
+            
+            else:
+                valuelist += str(value)
+            
+    keylist += ")"
+    valuelist += ")"
+
+    sqlstatement += "INSERT INTO " + TABLE_NAME + " " + keylist + " VALUES " + valuelist
+    print(sqlstatement)
+    return sqlstatement
+
+
+def cmdupdate(table,objeto,name):
+    table = str(table)
+    TABLE_NAME = table
+
+    sqlstatement = ''
+
+    
+    valuelist = ""
+    firstPair = True
+    for key, value in objeto.items():
+        if key !='ID' and key !='fecha' and key!='origen' and key!='lugar' and key!='Fecha' and key!='Lugar':
+            if type(value) is int:
+                valuelist+=key + " = "+ str(value) + ","
+            else:
+                valuelist+=key + " = "+ "'" + value + "'" + ","
+    
+    valuelist = valuelist[0:-1]
+    sqlstatement += "UPDATE " + TABLE_NAME + " SET " +valuelist + " WHERE ID = " +  "" + name + ""
+    
+    return sqlstatement
+
+
 
 class InventDB():
 
@@ -8,29 +68,39 @@ class InventDB():
     def getDevices():
         print("starting")
         try:
-            ServiceSQL.getConector().execute(" select top 100 * from InventDB order by codigo ")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,Dispositivos.codigo,Dispositivos.nombre,Dispositivos.marca,Dispositivos.fecha,Dispositivos.modelo,Dispositivos.foto,Dispositivos.cantidad,Dispositivos.IDorigen,Dispositivos.observaciones,Dispositivos.IDlugar,Dispositivos.pertenece,Dispositivos.descompostura,Dispositivos.costo,Dispositivos.compra,Dispositivos.serie,Dispositivos.proveedor,Lugares.Lugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
-
+            
             if len(row) == 0:
                 return 1
 
-            data = []
-            #print(row)
-            for r in row:
-                data.append([x for x in r])
+            rows = [x for x in row]
+            
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            
+            filas = []
+            for row in rows:
+                print(cols,rows)
+                print("..........")
+                fila = {}
+                for prop, val in zip(cols, row):
+                    #print(prop,val)
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
+                    
+                    #print(fila)
 
-            items = []
-            for item in row:
-                
-                items.append({'ID':item[0],'codigo':item[1],'nombre':item[2],'marca':item[3],'Fecha':item[4],'modelo':item[5],'foto':item[6],'cantidad':item[7],'origen':item[8],'observaciones':item[9],'lugar':item[10],'pertenece':item[11],'descompostura':item[12],'costo':item[13],'compra':item[14],'serie':item[15],'proveedor':item[16]  })
+                filas.append(fila)
 
-
-            datos = json.dumps(items)
+            
+            datos = json.dumps(filas)
             
             return datos
-        except ValueError:
-            print(ValueError)
+        except Exception as e:
+            print(e)
             return 2
 
 
@@ -39,40 +109,28 @@ class InventDB():
     def getDevicesbycode(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute(" select * from InventDB where codigo = '" + id + "' ")
+            ServiceSQL.getConector().execute("select * from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.codigo= '" + id + "' ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
             if len(row) == 0:
                 return 1
 
-            items = []
-            for item in row:
-                
-                items.append({'ID':item[0],'codigo':item[1],'nombre':item[2],'marca':item[3],'Fecha':item[4],'modelo':item[5],'foto':item[6],'cantidad':item[7],'origen':item[8],'observaciones':item[9],'lugar':item[10],'pertenece':item[11],'descompostura':item[12],'costo':item[13],'compra':item[14],'serie':item[15],'proveedor':item[16]  })
+            rows = [x for x in row]
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            filas = []
+            for row in rows:
+                fila = {}
+                for prop, val in zip(cols, row):
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
 
-            objectodevice = {
-                "ID": item[0],
-                "codigo": item[1],
-                "nombre": item[2],
-                "marca": item[3],
-                "Fecha": item[4],
-                "modelo": item[5],
-                "foto": item[6],
-                "cantidad": item[7],
-                "origen": item[8],
-                "observaciones": item[9],
-                "lugar": item[10],
-                "pertenece": item[11],
-                "descompostura": item[12],
-                "costo": item[13],
-                "compra": item[14],
-                "serie": item[15],
-                "proveedor": item[16]
-                
-            }
+                filas.append(fila)
 
-            datos = json.dumps(objectodevice)
+            print(filas)
+            datos = json.dumps(filas)
             
             return datos
         except ValueError:
@@ -84,40 +142,28 @@ class InventDB():
     def getDevicesbyname(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute(" select * from InventDB where nombre = '" + id + "' ")
+            ServiceSQL.getConector().execute("select * from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.nombre= '" + id + "' ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
             if len(row) == 0:
                 return 1
 
-            items = []
-            for item in row:
-                
-                items.append({'ID':item[0],'codigo':item[1],'nombre':item[2],'marca':item[3],'Fecha':item[4],'modelo':item[5],'foto':item[6],'cantidad':item[7],'origen':item[8],'observaciones':item[9],'lugar':item[10],'pertenece':item[11],'descompostura':item[12],'costo':item[13],'compra':item[14],'serie':item[15],'proveedor':item[16]  })
+            rows = [x for x in row]
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            filas = []
+            for row in rows:
+                fila = {}
+                for prop, val in zip(cols, row):
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
 
-            objectodevice = {
-                "ID": item[0],
-                "codigo": item[1],
-                "nombre": item[2],
-                "marca": item[3],
-                "Fecha": item[4],
-                "modelo": item[5],
-                "foto": item[6],
-                "cantidad": item[7],
-                "origen": item[8],
-                "observaciones": item[9],
-                "lugar": item[10],
-                "pertenece": item[11],
-                "descompostura": item[12],
-                "costo": item[13],
-                "compra": item[14],
-                "serie": item[15],
-                "proveedor": item[16]
-                
-            }
+                filas.append(fila)
 
-            datos = json.dumps(items)
+            print(filas)
+            datos = json.dumps(filas)
             
             return datos
         except ValueError:
@@ -131,7 +177,7 @@ class InventDB():
         
        
         try:
-            ServiceSQL.getConector().execute("SELECT * from InventDB where codigo = '" + id + "'")
+            ServiceSQL.getConector().execute("select * from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.ID= " + id + "")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
             
@@ -175,42 +221,45 @@ class InventDB():
     @staticmethod
     def postDevice(dispositivo):
         try:
-            print(dispositivo['ID'])
             
+            strinsert = cmdinsert("Dispositivos",dispositivo)
             
+            #print(strinsert)
             #ServiceSQL.getConector().execute("INSERT INTO InventDB (ID,nombre,apellido_materno,apellido_paterno,contrasena,tipoUsuario,fechaContratacion,telefono,correo) VALUES ('" + usuario['ID'] + "','" + usuario['nombre'] + "','" + usuario['apellido_materno'] + "','" + usuario['apellido_paterno'] + "','" + usuario['contrasena'] + "','" + usuario['tipoUsuario'] + "','" + usuario['fechaContratacion'] + "','" + usuario['telefono'] + "','" + usuario['correo'] + "')")
-            ServiceSQL.getConector().execute("INSERT INTO InventDB (ID,codigo,nombre,marca,Fecha,modelo,foto,cantidad,origen,observaciones,lugar,pertenece,descompostura,costo,compra,serie,proveedor) VALUES   ('" + dispositivo['ID'] + "','" + dispositivo['codigo'] + "','" + dispositivo['nombre'] + "','" + dispositivo['marca'] + "','" + dispositivo['Fecha'] + "','" + dispositivo['modelo'] + "','" + dispositivo['foto'] + "','" + dispositivo['cantidad'] + "','" + dispositivo['origen'] + "','" + dispositivo['observaciones'] + "','" + dispositivo['lugar'] + "','" + dispositivo['pertenece'] + "','" + dispositivo['descompostura'] + "','" + dispositivo['costo'] + "','" + dispositivo['compra'] + "','" + dispositivo['serie'] + "','" + dispositivo['proveedor'] + "')")
+            ServiceSQL.getConector().execute(strinsert)
             ServiceSQL.getcnxn().commit()
 
 
             return 0
-        except ValueError:
-            print(ValueError)
+        except Exception as e:
+            print(e)
             return 2
         
 
 
     @staticmethod
-    def putDevice(dispositivo):
+    def putDevice(dispositivo,id):
         #check if use exist
         
         try:
-            ServiceSQL.getConector().execute("SELECT * from InventDB where nombre = '" + dispositivo['codigo'] + "'")
+            ServiceSQL.getConector().execute("SELECT * from Dispositivos  where ID = " + id + "")
             row = ServiceSQL.getConector().fetchall()
             print(row)
             if len(row) >= 0:
 
-                #update user
+                #update device
 
-                ServiceSQL.getConector().execute("UPDATE InventDB SET codigo = '" + dispositivo['codigo'] + "',nombre = '" + dispositivo['nombre'] + "',marca = '" + dispositivo['marca'] + "',foto = '" + dispositivo['foto'] + "',cantidad = '" + dispositivo['cantidad'] + "',origen = '" + dispositivo['origen'] + "',observaciones = '" + dispositivo['observaciones'] + "',lugar = '" + dispositivo['lugar'] + "',pertenece = '" + dispositivo['pertenece'] + "',descompostura = '" + dispositivo['descompostura'] + "',costo = '" + dispositivo['costo'] + "',compra = '" + dispositivo['compra'] + "', serie = '" + dispositivo['serie'] + "',proveedor = '" + dispositivo['proveedor'] + "'      WHERE ID = '" + dispositivo['ID'] + "'")
+                strupdate = cmdupdate("Dispositivos",dispositivo,id)
+                print(strupdate)
+                ServiceSQL.getConector().execute(strupdate)
                 ServiceSQL.getcnxn().commit()
                 print('updated')
                 return 0
             else:
                 return 1
     
-        except:
-            print('server error')
+        except Exception as e:
+            print(e)
             return 2        
        
                 

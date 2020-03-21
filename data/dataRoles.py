@@ -1,6 +1,6 @@
 from data.Service import ServiceSQL
 import json
-
+import traceback
 
 class RoleDB():
 
@@ -73,8 +73,8 @@ class RoleDB():
             ServiceSQL.getConector().execute(cmdinsert)
             ServiceSQL.getcnxn().commit()
             return 0
-        except ValueError:
-            print(ValueError)
+        except Exception as e:
+            print(e)
             return 2
 
     

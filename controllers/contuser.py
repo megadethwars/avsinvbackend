@@ -127,7 +127,7 @@ def Putuser(name):
 
             content = request.json
 
-            status=UserDB.putUser(content)
+            status=UserDB.putUser(content,name)
 
             if status == 0:
                 return ok_server_put('ok')
