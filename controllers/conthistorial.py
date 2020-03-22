@@ -4,7 +4,7 @@ from run import app
 from data.Service import ServiceSQL
 from data.datahistorial import HistorialDB
 from status.status import Httpstatus
-
+import datetime
 
 @app.route('/moves')
 def GetMovements():
@@ -35,20 +35,24 @@ def GetMovementsbysearch():
         
         
         try:
-            lista.append(request.args.get('movimiento'))
-            lista.append(request.args.get('lugar'))
-            lista.append(request.args.get('usuario'))
+            lista.append(request.args.get('IDtipomov'))
+            lista.append(request.args.get('IDlugar'))
+            lista.append(request.args.get('IDusuario'))
             lista.append(request.args.get('producto'))
-            lista.append(request.args.get('fecha'))
+            lista.append(request.args.get('fechamovimiento'))
             lista.append(request.args.get('modelo'))
             lista.append(request.args.get('marca'))
             lista.append(request.args.get('codigo'))
             lista.append(request.args.get('serie'))
+            
+            if request.args.get('fechamovimiento')!="null":
+                datetime.datetime.strptime(request.args.get('fechamovimiento'),"%Y-%m-%d").date()
 
-        except:
+        except Exception as e:
+            print(e)
             return Httpstatus.bad_request('bad_request')
             
-        print(len(lista))
+        
         #movimiento = request.args.get('movimiento')
         if len(lista) !=9:
             return Httpstatus.bad_request('bad request')
@@ -64,8 +68,8 @@ def GetMovementsbysearch():
 
         return data,200, {'ContentType':'application/json'}
 
-    except:
-        print("error")
+    except Exception as e:
+        print(e)
         return Httpstatus.int_server('server error')
 
 

@@ -1,5 +1,42 @@
 from data.Service import ServiceSQL
 import json
+import traceback
+from datetime import date, datetime
+
+    
+def cmdinsert(table,objeto):
+    table = str(table)
+    TABLE_NAME = table
+
+    sqlstatement = ''
+
+    keylist = "("
+    valuelist = "("
+    firstPair = True
+    for key, value in objeto.items():
+        if key !='ID' and key !='fecha' and key!='fechareporte' and key!='codigo' and key!='producto' and key!='marca' and key!='serie' and key!='nombre':
+            if not firstPair:
+                keylist += ", "
+                valuelist += ", "
+            firstPair = False
+            keylist += key
+            
+            if type(value) is str:
+                valuelist += "'" + value + "'"
+            
+            elif type(value) == None:
+                print("nulo")
+                valuelist += ""
+            
+            else:
+                valuelist += str(value)
+            
+    keylist += ")"
+    valuelist += ")"
+
+    sqlstatement += "INSERT INTO " + TABLE_NAME + " " + keylist + " VALUES " + valuelist
+    
+    return sqlstatement
 
 class ReportDB():
 
@@ -116,15 +153,14 @@ class ReportDB():
     @staticmethod
     def postReport(reporte):
         try:
-                           
+            insert = cmdinsert("Reportes",reporte)
             #ServiceSQL.getConector().execute("INSERT INTO InventDB (ID,nombre,apellido_materno,apellido_paterno,contrasena,tipoUsuario,fechaContratacion,telefono,correo) VALUES ('" + usuario['ID'] + "','" + usuario['nombre'] + "','" + usuario['apellido_materno'] + "','" + usuario['apellido_paterno'] + "','" + usuario['contrasena'] + "','" + usuario['tipoUsuario'] + "','" + usuario['fechaContratacion'] + "','" + usuario['telefono'] + "','" + usuario['correo'] + "')")
-            ServiceSQL.getConector().execute("INSERT INTO Reportes (ID,codigo,producto,serie,nombre,marca,modelo,comentario,foto) VALUES   ('" + reporte['ID'] + "','" + reporte['codigo'] + "','" + reporte['producto'] + "','" + reporte['serie'] + "','" + reporte['nombre'] + "','" + reporte['marca'] + "','" + reporte['modelo'] + "','" + reporte['comentario'] + "','" + reporte['foto'] + "')")
+            ServiceSQL.getConector().execute(insert)
             ServiceSQL.getcnxn().commit()
 
-
             return 0
-        except:
-            print('error de sql')
+        except Exception as e:
+            print(e)
             return 2
         
 

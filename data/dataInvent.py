@@ -81,8 +81,7 @@ class InventDB():
             
             filas = []
             for row in rows:
-                print(cols,rows)
-                print("..........")
+                
                 fila = {}
                 for prop, val in zip(cols, row):
                     #print(prop,val)
