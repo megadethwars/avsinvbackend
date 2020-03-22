@@ -73,11 +73,11 @@ class ServiceSQL(object):
             
             print("already connected")     
             Isconnected = True
-            return Isconnected
-        except:
+            return "OK"
+        except Exception as e:
             Isconnected = False
             print("error de conexion")
-            return Isconnected
+            return e
 
     @property
     def bar(self):

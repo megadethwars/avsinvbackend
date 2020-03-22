@@ -32,6 +32,8 @@ from controllers import contLugares
 def hello():
     status = ServiceSQL.reconncetOnce()
 
+    return status
+
     if status==True:
         return "SQL Connected"
     else:
