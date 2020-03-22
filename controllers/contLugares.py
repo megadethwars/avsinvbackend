@@ -4,6 +4,7 @@ from run import app
 from data.Service import ServiceSQL
 from data.dataLugares import LugarDB
 from status.status import Httpstatus
+import traceback
 
 @app.route('/lugares')
 def GetLugares():
@@ -72,9 +73,9 @@ def putLugar(id):
     try:
         print(request.is_json)
         if request.is_json:
-
+       
             content = request.json
-            print(content)
+            
 
             status=LugarDB.putLugar(id,content)
 
@@ -92,6 +93,6 @@ def putLugar(id):
         else:
             return Httpstatus.bad_request('bad request')
         
-    except:
-        print('error')
+    except Exception as e:
+        print(e)
         return Httpstatus.int_server('server error')

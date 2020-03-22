@@ -59,7 +59,38 @@ def cmdupdate(table,objeto,name):
     
     return sqlstatement
 
+def cmdselect(argumentos,cols):
+    select = ""
 
+    select = str(select)
+
+    select = "select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,IDorigen,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where "
+
+    isfirst=False
+    count = 0
+
+
+    for column in argumentos:
+       
+        if column != "" and column != 'null' and column!=None:
+            
+            if isfirst==True:
+                if type(column) is str:        
+                    select+=" and " + cols[count] + " = '" + column + "' "
+                else:
+                    select+=" and " + cols[count] + " = " + column + ""
+            else:   
+                if type(column) is str:
+                    select+="" + cols[count] + " = '" + column + "' " 
+                else:
+                    select+="" + cols[count] + " = " + column + "" 
+
+            isfirst = True
+        
+        count=count + 1
+    select+=" order by codigo"
+    
+    return select
 
 class InventDB():
 
@@ -68,7 +99,7 @@ class InventDB():
     def getDevices():
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,Dispositivos.codigo,Dispositivos.nombre,Dispositivos.marca,Dispositivos.fecha,Dispositivos.modelo,Dispositivos.foto,Dispositivos.cantidad,Dispositivos.IDorigen,Dispositivos.observaciones,Dispositivos.IDlugar,Dispositivos.pertenece,Dispositivos.descompostura,Dispositivos.costo,Dispositivos.compra,Dispositivos.serie,Dispositivos.proveedor,Lugares.Lugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,IDorigen,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID order by codigo")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
             
@@ -108,7 +139,7 @@ class InventDB():
     def getDevicesbycode(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select * from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.codigo= '" + id + "' ")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,IDorigen,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.codigo= '" + id + "' order by codigo")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -169,6 +200,51 @@ class InventDB():
             print('error sql')
             return 2
 
+
+    @staticmethod
+    def getDevicesbysearch(listaargs):
+        print("starting")
+        try:
+
+            columnas = ["codigo","producto","fecha","marca","modelo","serie"]
+
+            strsel =cmdselect(listaargs,columnas)
+
+           
+
+            ServiceSQL.getConector().execute(strsel)
+            print("queried")
+            row = ServiceSQL.getConector().fetchall()
+
+            if len(row) == 0:
+                return 1
+
+            rows = [x for x in row]
+            
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            
+            filas = []
+            for row in rows:
+                
+                fila = {}
+                for prop, val in zip(cols, row):
+                    #print(prop,val)
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
+                    
+                    #print(fila)
+
+                filas.append(fila)
+
+            
+            datos = json.dumps(filas)
+            
+            return datos
+        except Exception as e:
+            print(e)
+            return 2
 
     
     @staticmethod

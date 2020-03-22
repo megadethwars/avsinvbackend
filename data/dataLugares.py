@@ -1,6 +1,6 @@
 from data.Service import ServiceSQL
 import json
-
+import traceback
 
 class LugarDB():
 
@@ -86,12 +86,7 @@ class LugarDB():
             ServiceSQL.getConector().execute("SELECT count(*) from Lugares where ID = " + id + "")
             row = ServiceSQL.getConector().fetchall()
           
-            data = []
-            
-            for r in row:
-                data.append([x for x in r])
-
-          
+                    
             items = []
             for item in row:
                 items.append(item[0])
@@ -109,8 +104,8 @@ class LugarDB():
             else:
                 return 1
             
-        except ValueError:
-            print(ValueError)
+        except Exception as e:
+            print(e)
             return 2
 
     

@@ -4,7 +4,7 @@ from run import app
 from data.Service import ServiceSQL
 from data.dataInvent import InventDB
 from status.status import Httpstatus
-
+import datetime
 
 
 @app.route('/devices')
@@ -69,6 +69,51 @@ def GetDevicebyname():
         print("error")
         return Httpstatus.int_server('server error')  
 
+
+@app.route('/devicesearch')
+def Getdevicesbysearch():
+
+    try:
+        #["codigo","producto","fecha","modelo","marca","serie"]
+        
+        lista=[]
+        
+        
+        try:
+            lista.append(request.args.get('codigo'))
+            lista.append(request.args.get('producto'))
+            lista.append(request.args.get('fecha'))
+            lista.append(request.args.get('modelo'))           
+            lista.append(request.args.get('marca'))
+            lista.append(request.args.get('serie'))
+            
+            
+            if request.args.get('fecha')!="null":
+                datetime.datetime.strptime(request.args.get('fecha'),"%Y-%m-%d").date()
+
+        except Exception as e:
+            print(e)
+            return Httpstatus.bad_request('bad_request')
+            
+        
+        #movimiento = request.args.get('movimiento')
+        if len(lista) !=6:
+            return Httpstatus.bad_request('bad request')
+        data = InventDB.getDevicesbysearch(lista)
+        
+
+        
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+        elif data == 1:
+            return Httpstatus.not_found('not found')
+
+        return data,200, {'ContentType':'application/json'}
+
+    except Exception as e:
+        print(e)
+        return Httpstatus.int_server('server error') 
 
 
 @app.route('/postDevice', methods = ['POST'])

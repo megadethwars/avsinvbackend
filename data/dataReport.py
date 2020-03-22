@@ -45,21 +45,34 @@ class ReportDB():
     def getReport():
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select top 100 * from Reportes order by codigo")
+            ServiceSQL.getConector().execute("select Reportes.ID,Reportes.IDreporte, Reportes.IDdevice,Reportes.IDusuario,Reportes.foto2,Reportes.fechareporte,Dispositivos.codigo,Dispositivos.producto,Dispositivos.marca,Dispositivos.serie,Usuarios.nombre from Reportes inner join Dispositivos on Reportes.IDdevice = Dispositivos.ID inner join Usuarios on Reportes.IDusuario = Usuarios.ID order by fechareporte")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
             if len(row) == 0:
                 return 1
 
-
-            items = []
-            for item in row:
+            rows = [x for x in row]
+            
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            
+            filas = []
+            for row in rows:
                 
-                items.append({'ID':item[0],'codigo':item[1],'producto':item[2],'serie':item[3],'nombre':item[4],'marca':item[5],'modelo':item[6],'comentario':item[7],'foto':item[8]})
+                fila = {}
+                for prop, val in zip(cols, row):
+                    #print(prop,val)
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
+                    
+                    #print(fila)
 
+                filas.append(fila)
 
-            datos = json.dumps(items)
+            
+            datos = json.dumps(filas)
             
             return datos
         except ValueError:
@@ -72,7 +85,7 @@ class ReportDB():
     def getReportsbycode(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute(" select * from Reportes where codigo = '" + id + "' ")
+            ServiceSQL.getConector().execute("select Reportes.ID,Reportes.IDreporte, Reportes.IDdevice,Reportes.IDusuario,Reportes.foto2,Reportes.fechareporte,Dispositivos.codigo,Dispositivos.producto,Dispositivos.marca,Dispositivos.serie,Usuarios.nombre from Reportes inner join Dispositivos on Reportes.IDdevice = Dispositivos.ID inner join Usuarios on Reportes.IDusuario = Usuarios.ID where codigo = '" + id + "' order by fechareporte")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -80,26 +93,27 @@ class ReportDB():
                 return 1
 
             
-            items = []
-            for item in row:
+            rows = [x for x in row]
+            
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            
+            filas = []
+            for row in rows:
                 
-                items.append({'ID':item[0],'codigo':item[1],'producto':item[2],'serie':item[3],'nombre':item[4],'marca':item[5],'modelo':item[6],'comentario':item[7],'foto':item[8]})
+                fila = {}
+                for prop, val in zip(cols, row):
+                    #print(prop,val)
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
+                    
+                    #print(fila)
 
+                filas.append(fila)
 
-            reportedevice = {
-                "ID": item[0],
-                "codigo": item[1],
-                "producto": item[2],
-                "serie": item[3],
-                "nombre": item[4],
-                "marca": item[5],
-                "modelo": item[6],
-                "comentario": item[7],
-                "foto": item[8]
-                
-            }
-
-            datos = json.dumps(items)
+            
+            datos = json.dumps(filas)
             
             return datos
         except ValueError:
@@ -113,7 +127,7 @@ class ReportDB():
     def getReportsbyname(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute(" select * from Reportes where producto = '" + id + "' ")
+            ServiceSQL.getConector().execute("select Reportes.ID,Reportes.IDreporte, Reportes.IDdevice,Reportes.IDusuario,Reportes.foto2,Reportes.fechareporte,Dispositivos.codigo,Dispositivos.producto,Dispositivos.marca,Dispositivos.serie,Usuarios.nombre from Reportes inner join Dispositivos on Reportes.IDdevice = Dispositivos.ID inner join Usuarios on Reportes.IDusuario = Usuarios.ID where producto = '" + id + "' order by fechareporte")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -121,26 +135,27 @@ class ReportDB():
                 return 1
 
             
-            items = []
-            for item in row:
+            rows = [x for x in row]
+            
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            
+            filas = []
+            for row in rows:
                 
-                items.append({'ID':item[0],'codigo':item[1],'producto':item[2],'serie':item[3],'nombre':item[4],'marca':item[5],'modelo':item[6],'comentario':item[7],'foto':item[8]})
+                fila = {}
+                for prop, val in zip(cols, row):
+                    #print(prop,val)
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
+                    
+                    #print(fila)
 
+                filas.append(fila)
 
-            reportedevice = {
-                "ID": item[0],
-                "codigo": item[1],
-                "producto": item[2],
-                "serie": item[3],
-                "nombre": item[4],
-                "marca": item[5],
-                "modelo": item[6],
-                "comentario": item[7],
-                "foto": item[8]
-                
-            }
-
-            datos = json.dumps(items)
+            
+            datos = json.dumps(filas)
             
             return datos
         except ValueError:

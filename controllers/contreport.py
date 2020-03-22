@@ -51,7 +51,7 @@ def GetReport(name):
 def GetReportbyname():
     try:
 
-        name = request.args.get('nombre')
+        name = request.args.get('producto')
         data = ReportDB.getReportsbyname(name)
 
         if data == 1:
