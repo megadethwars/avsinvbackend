@@ -76,8 +76,9 @@ class ServiceSQL(object):
             return "OK"
         except Exception as e:
             Isconnected = False
+            error = str(e).encode("utf-8")
             print("error de conexion")
-            return e
+            return error
 
     @property
     def bar(self):
