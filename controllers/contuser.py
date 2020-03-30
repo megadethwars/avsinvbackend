@@ -3,7 +3,7 @@ import json
 from run import app
 from data.Service import ServiceSQL
 from data.dataUser import UserDB
-
+from werkzeug.security import generate_password_hash, check_password_hash
 
 #get users
 
@@ -38,6 +38,11 @@ def unauthorized(message = 'unauthorized'):
     response.status_code = 401
     return response
 
+def conflict(message = 'conflict'):
+    response = jsonify({'message': message})
+    response.status_code = 409
+    return response
+
 
 @app.route('/users')
 def GetUsers():
@@ -59,7 +64,7 @@ def GetUsers():
 
     return 'postuser'
 
-@app.route('/user/<name>')
+@app.route('/users/<name>')
 def GetUser(name):
     try:
         data = UserDB.GetUser(name)
@@ -90,17 +95,24 @@ def Postuser():
         
         if request.is_json:
             content = request.get_json()
+
+            content['password'] = generate_password_hash(content['password'])
+
             status = UserDB.postUser(content)
 
             if status == 0:
                 return ok_server_post()
+            elif status == 1:
+                return conflict('already exist')
+                
             else:
                 return int_server('server error')
         
         else:
             return bad_request('bad request')
 
-    except:        
+    except Exception as e:        
+        print(e)
         return int_server('server error')
 
 
