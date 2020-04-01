@@ -86,7 +86,29 @@ def GetUser(name):
 
     return 'postuser'
 
+
+@app.route('/userbyname/<name>')
+def GetUserByName(name):
+    try:
+        data = UserDB.GetUserByName(name)
+
+        if data == 1:
+            return not_found('not found')
+
+
+        if data == 2:
+            return int_server('error de servidor')
+
+          
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return int_server('server error')
     
+
+    return 'postuser'
+
 
 @app.route('/postUser', methods = ['POST'])
 def Postuser():

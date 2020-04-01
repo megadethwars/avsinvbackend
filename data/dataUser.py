@@ -127,7 +127,7 @@ class UserDB():
     def GetUsers():
         print("starting")
         try:
-            ServiceSQL.getConector().execute("SELECT Usuarios.ID,Usuarios.nombre,Usuarios.apellido_paterno,Usuarios.apellido_materno,Usuarios.IDtipoUsuario,Usuarios.fecha,Usuarios.telefono,Usuarios.correo,Roles.rol from Usuarios inner join Roles on Usuarios.IDtipoUsuario = Roles.ID")
+            ServiceSQL.getConector().execute("SELECT Usuarios.ID,Usuarios.nombre,Usuarios.apellido_paterno,Usuarios.apellido_materno,Usuarios.IDtipoUsuario,Usuarios.fecha,Usuarios.telefono,Usuarios.correo,Roles.rol,Usuarios.foto from Usuarios inner join Roles on Usuarios.IDtipoUsuario = Roles.ID")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -176,7 +176,7 @@ class UserDB():
         
        
         try:
-            ServiceSQL.getConector().execute("SELECT Usuarios.ID,Usuarios.nombre,Usuarios.apellido_paterno,Usuarios.apellido_materno,Usuarios.IDtipoUsuario,Usuarios.fecha,Usuarios.telefono,Usuarios.correo,Roles.rol from Usuarios inner join Roles on Usuarios.IDtipoUsuario = Roles.ID where Usuarios.ID = " + name + "")
+            ServiceSQL.getConector().execute("SELECT Usuarios.ID,Usuarios.nombre,Usuarios.apellido_paterno,Usuarios.apellido_materno,Usuarios.IDtipoUsuario,Usuarios.fecha,Usuarios.telefono,Usuarios.correo,Roles.rol,Usuarios.foto from Usuarios inner join Roles on Usuarios.IDtipoUsuario = Roles.ID where Usuarios.ID = " + name + "")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
             
@@ -204,9 +204,46 @@ class UserDB():
             return datos
         except:
             print("Error de SQL")
-            return None
+            return 2
 
-              
+
+    
+    @staticmethod
+    def GetUserByName(name):
+        
+       
+        try:
+            ServiceSQL.getConector().execute("SELECT Usuarios.ID,Usuarios.nombre,Usuarios.apellido_paterno,Usuarios.apellido_materno,Usuarios.IDtipoUsuario,Usuarios.fecha,Usuarios.telefono,Usuarios.correo,Roles.rol,Usuarios.foto from Usuarios inner join Roles on Usuarios.IDtipoUsuario = Roles.ID where Usuarios.nombre = '" + name + "'")
+            print("queried")
+            row = ServiceSQL.getConector().fetchall()
+            
+            if len(row) == 0:
+                return 1
+            
+            rows = [x for x in row]
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            filas = []
+            for row in rows:
+                fila = {}
+                for prop, val in zip(cols, row):
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
+
+                filas.append(fila)
+
+            print(filas)
+
+            datos = json.dumps(filas)
+            
+            #print(json.dumps(data))
+            return datos
+        except:
+            print("Error de SQL")
+            return 2
+
+
 
     @staticmethod
     def postUser(usuario):
