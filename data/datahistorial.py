@@ -34,7 +34,7 @@ def strselect(argumentos,cols):
 
     select = str(select)
 
-    select = "select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID where "
+    select = "select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,fotomov1,fotomov2 from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID where "
 
     isfirst=False
     count = 0
@@ -42,7 +42,7 @@ def strselect(argumentos,cols):
 
     for column in argumentos:
        
-        if column != "" and column != 'null' and column!=None:
+        if column != "" and column != 'null' and column!=None and column!='0':
             
             if isfirst==True:
                 if type(column) is str:        
@@ -59,7 +59,7 @@ def strselect(argumentos,cols):
         
         count=count + 1
     select+=" order by fechamovimiento"
-    
+    print(strselect)
     return select
 
     
@@ -73,7 +73,7 @@ def cmdinsert(table,objeto):
     valuelist = "("
     firstPair = True
     for key, value in objeto.items():
-        if key !='ID' and key !='fecha' and key!='fechamovimiento' and key!='lugar' and key!='codigo' and key!='producto' and key!='marca' and key!='modelo' and key!='nombre' and key!='Lugar':
+        if key !='ID' and key !='fecha' and key!='fechamovimiento' and key!='lugar' and key!='codigo' and key!='producto' and key!='marca' and key!='modelo' and key!='nombre' and key!='Lugar' and key!='serie' and key!='statuscode' and key!='message' and key!='IDlugar' and key!='cantidad':
             if not firstPair:
                 keylist += ", "
                 valuelist += ", "
@@ -86,6 +86,10 @@ def cmdinsert(table,objeto):
             elif type(value) == None:
                 print("nulo")
                 valuelist += ""
+            
+            elif value is None:
+                print("nulo")
+                valuelist += "'N/A'"
             
             else:
                 valuelist += str(value)
@@ -103,7 +107,7 @@ class HistorialDB():
     def getHistorial():
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID order by fechamovimiento")
+            ServiceSQL.getConector().execute("select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,fotomov1,fotomov2 from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID order by fechamovimiento")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -143,11 +147,11 @@ class HistorialDB():
         print("starting")
         try:
 
-            columnas = ["IDtipomov","IDlugar","IDusuario","producto","fechamovimiento","modelo","marca","codigo","serie"]
+            columnas = ["IDmovimiento","IDtipomov","IDlugar","IDusuario","producto","fechamovimiento","modelo","marca","codigo","serie"]
 
             strsel =strselect(listaargs,columnas)
 
-            print(strselect)
+            print(strsel)
 
             ServiceSQL.getConector().execute(strsel)
             print("queried")
@@ -204,8 +208,8 @@ class HistorialDB():
 
 
             return 0
-        except:
-            print('error de sql')
+        except Exception as e:
+            print(e)
             return 2
 
 

@@ -37,7 +37,7 @@ class ServiceSQL(object):
         global conector
         global cnxn
         while True:
-            time.sleep(1800)
+            time.sleep(2700)
             try:
                 print('reconectando')
                 server = 'inventarioavs1.database.windows.net'

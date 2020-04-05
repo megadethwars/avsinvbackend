@@ -35,7 +35,8 @@ def GetMovementsbysearch():
         
         
         try:
-            lista.append(request.args.get('IDtipomov'))
+            lista.append(request.args.get('IDmovimiento'))
+            lista.append(request.args.get('IDtipomov'))      
             lista.append(request.args.get('IDlugar'))
             lista.append(request.args.get('IDusuario'))
             lista.append(request.args.get('producto'))
@@ -54,7 +55,7 @@ def GetMovementsbysearch():
             
         
         #movimiento = request.args.get('movimiento')
-        if len(lista) !=9:
+        if len(lista) !=10:
             return Httpstatus.bad_request('bad request')
         data = HistorialDB.getHistorialbysearch(lista)
         
