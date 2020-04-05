@@ -23,9 +23,9 @@ def cmdinsert(table,objeto):
             if type(value) is str:
                 valuelist += "'" + value + "'"
             
-            elif type(value) == None:
-                print("nulo")
-                valuelist += ""
+            elif value is None:
+                
+                valuelist += "'N/A'"
             
             else:
                 valuelist += str(value)
@@ -34,7 +34,7 @@ def cmdinsert(table,objeto):
     valuelist += ")"
 
     sqlstatement += "INSERT INTO " + TABLE_NAME + " " + keylist + " VALUES " + valuelist
-    print(sqlstatement)
+    #print(sqlstatement)
     return sqlstatement
 
 
@@ -51,8 +51,11 @@ def cmdupdate(table,objeto,name):
         if key !='ID' and key !='fecha'  and key!='lugar' and key!='Fecha' and key!='Lugar' and key!='message' and key!='statuscode':
             if type(value) is int:
                 valuelist+=key + " = "+ str(value) + ","
-            else:
+            elif type(value) is str:
                 valuelist+=key + " = "+ "'" + value + "'" + ","
+            elif value is None:
+                valuelist+=key + " = "+ "'N/A'" + ","
+
     
     valuelist = valuelist[0:-1]
     sqlstatement += "UPDATE " + TABLE_NAME + " SET " +valuelist + " WHERE ID = " +  "" + name + ""
@@ -137,10 +140,10 @@ class InventDB():
 
     @staticmethod
     def getDevicesbycode(id):
-        print("starting")
+        #print("starting")
         try:
             ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.codigo= '" + id + "' order by codigo")
-            print("queried")
+            #print("queried")
             row = ServiceSQL.getConector().fetchall()
 
             if len(row) == 0:
@@ -159,7 +162,7 @@ class InventDB():
 
                 filas.append(fila)
 
-            print(filas)
+            #print(filas)
             datos = json.dumps(filas)
             
             return datos
@@ -509,13 +512,13 @@ class InventDB():
         try:
             ServiceSQL.getConector().execute("SELECT * from Dispositivos  where ID = " + id + "")
             row = ServiceSQL.getConector().fetchall()
-            print(row)
+            #print(row)
             if len(row) >= 0:
 
                 #update device
 
                 strupdate = cmdupdate("Dispositivos",dispositivo,id)
-                print(strupdate)
+                #print(strupdate)
                 ServiceSQL.getConector().execute(strupdate)
                 ServiceSQL.getcnxn().commit()
                 print('updated')
