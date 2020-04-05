@@ -40,3 +40,9 @@ class Httpstatus(object):
         response = jsonify({'message': message})
         response.status_code = 401
         return response
+
+    @staticmethod
+    def conflict(message = 'conflict'):
+        response = jsonify({'message': message})
+        response.status_code = 409
+        return response

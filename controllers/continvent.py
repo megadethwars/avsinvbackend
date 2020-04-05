@@ -70,6 +70,110 @@ def GetDevicebyname():
         return Httpstatus.int_server('server error')  
 
 
+@app.route('/deviceid/<name>')
+def GetDeviceid(name):
+    try:
+        data = InventDB.getDevicesbyID(name)
+
+        if data == 1:
+            return Httpstatus.not_found('not found')
+
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+
+          
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return Httpstatus.int_server('server error')
+
+
+
+@app.route('/devicemarca/<name>')
+def GetDevicemarca(name):
+    try:
+        data = InventDB.getDevicesbymarca(name)
+
+        if data == 1:
+            return Httpstatus.not_found('not found')
+
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+
+          
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return Httpstatus.int_server('server error')
+
+    
+@app.route('/devicemodelo/<name>')
+def GetDevicemodelo(name):
+    try:
+        data = InventDB.getDevicesbymodelo(name)
+
+        if data == 1:
+            return Httpstatus.not_found('not found')
+
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+
+          
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return Httpstatus.int_server('server error')
+
+
+@app.route('/deviceserie')
+def GetDeviceserie():
+    try:
+
+        name = request.args.get('serie')
+        data = InventDB.getDevicesbyserie(name)
+
+        if data == 1:
+            return Httpstatus.not_found('not found')
+
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+
+          
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return Httpstatus.int_server('server error')
+
+
+@app.route('/deviceprov/<name>')
+def GetDeviceprov(name):
+    try:
+        data = InventDB.getDevicesbyproveedor(name)
+
+        if data == 1:
+            return Httpstatus.not_found('not found')
+
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+
+          
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return Httpstatus.int_server('server error')
+
+
+
 @app.route('/devicesearch')
 def Getdevicesbysearch():
 
@@ -130,6 +234,11 @@ def PostDevice():
 
             if status == 0:
                 return Httpstatus.ok_server_post()
+            elif status==2:
+                return Httpstatus.int_server('server error')
+            elif status == 1:
+                return Httpstatus.conflict('ya existente')
+
             else:
                 return Httpstatus.int_server('server error')
         
