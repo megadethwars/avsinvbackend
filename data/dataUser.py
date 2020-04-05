@@ -33,7 +33,7 @@ def strinsert(table,cols,obj):
     insertcmd=insertcmd[0:-1]
     insertcmd+=")"    
 
-    print(insertcmd)
+    #print(insertcmd)
     return insertcmd
 
 
@@ -62,7 +62,7 @@ def strselect(table,argumentos,cols):
         
         count=count + 1
 
-    print(select)
+    #print(select)
     return select
 
 
@@ -91,7 +91,7 @@ def cmdinsert(table,objeto):
     valuelist += ")"
 
     sqlstatement += "INSERT INTO " + TABLE_NAME + " " + keylist + " VALUES " + valuelist
-    print(sqlstatement)
+    #print(sqlstatement)
     return sqlstatement
 
 
@@ -116,7 +116,7 @@ def cmdupdate(table,objeto,name):
     
     valuelist = valuelist[0:-1]
     sqlstatement += "UPDATE " + TABLE_NAME + " SET " +valuelist + " WHERE ID = " +  "" + name + ""
-    print(sqlstatement)
+    #print(sqlstatement)
     return sqlstatement
 
 
@@ -196,7 +196,7 @@ class UserDB():
 
                 filas.append(fila)
 
-            print(filas)
+            #print(filas)
 
             datos = json.dumps(filas)
             
@@ -233,7 +233,7 @@ class UserDB():
 
                 filas.append(fila)
 
-            print(filas)
+            #print(filas)
 
             datos = json.dumps(filas)
             
@@ -252,7 +252,7 @@ class UserDB():
 
             ServiceSQL.getConector().execute("SELECT count(*) from Usuarios where nombre = '" + usuario['nombre'] + "'")
             row = ServiceSQL.getConector().fetchall()
-            print(row)
+            #print(row)
             data = []
             
             for r in row:
@@ -268,7 +268,7 @@ class UserDB():
             
                 
                 sqlinsert = cmdinsert("Usuarios",usuario)
-                print(sqlinsert)
+                #print(sqlinsert)
                 ServiceSQL.getConector().execute(sqlinsert)
                 ServiceSQL.getcnxn().commit()
           
