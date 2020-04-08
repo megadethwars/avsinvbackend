@@ -151,7 +151,7 @@ class HistorialDB():
 
             strsel =strselect(listaargs,columnas)
 
-            print(strsel)
+            #print(strsel)
 
             ServiceSQL.getConector().execute(strsel)
             print("queried")
@@ -199,7 +199,7 @@ class HistorialDB():
                 
                 columns.append(r.column_name)
 
-            print(columns)
+            #print(columns)
             insert = cmdinsert("Movimientos",movimiento)
             #ServiceSQL.getConector().execute("INSERT INTO InventDB (ID,nombre,apellido_materno,apellido_paterno,contrasena,tipoUsuario,fechaContratacion,telefono,correo) VALUES ('" + usuario['ID'] + "','" + usuario['nombre'] + "','" + usuario['apellido_materno'] + "','" + usuario['apellido_paterno'] + "','" + usuario['contrasena'] + "','" + usuario['tipoUsuario'] + "','" + usuario['fechaContratacion'] + "','" + usuario['telefono'] + "','" + usuario['correo'] + "')")
             ServiceSQL.getConector().execute(insert)
