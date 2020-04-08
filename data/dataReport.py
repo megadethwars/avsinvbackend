@@ -14,7 +14,7 @@ def cmdinsert(table,objeto):
     valuelist = "("
     firstPair = True
     for key, value in objeto.items():
-        if key !='ID' and key !='fecha' and key!='fechareporte' and key!='codigo' and key!='producto' and key!='marca' and key!='serie' and key!='nombre':
+        if key !='ID' and key !='fecha' and key!='fechareporte' and key!='codigo' and key!='producto' and key!='marca' and key!='serie' and key!='modelo' and key!='nombre' and key!='statuscode' and key!='message' and key!='nombre':
             if not firstPair:
                 keylist += ", "
                 valuelist += ", "
@@ -45,7 +45,7 @@ class ReportDB():
     def getReport():
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Reportes.ID,Reportes.IDreporte, Reportes.IDdevice,Reportes.IDusuario,Reportes.foto2,Reportes.fechareporte,Dispositivos.codigo,Dispositivos.producto,Dispositivos.marca,Dispositivos.serie,Usuarios.nombre from Reportes inner join Dispositivos on Reportes.IDdevice = Dispositivos.ID inner join Usuarios on Reportes.IDusuario = Usuarios.ID order by fechareporte")
+            ServiceSQL.getConector().execute("select Reportes.ID,Reportes.IDreporte, Reportes.IDdevice,Reportes.IDusuario,Reportes.foto2,Reportes.fechareporte,Dispositivos.codigo,Dispositivos.producto,Dispositivos.marca,Dispositivos.serie,Usuarios.nombre,Reportes.foto2,comentario from Reportes inner join Dispositivos on Reportes.IDdevice = Dispositivos.ID inner join Usuarios on Reportes.IDusuario = Usuarios.ID order by fechareporte")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -85,7 +85,7 @@ class ReportDB():
     def getReportsbycode(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Reportes.ID,Reportes.IDreporte, Reportes.IDdevice,Reportes.IDusuario,Reportes.foto2,Reportes.fechareporte,Dispositivos.codigo,Dispositivos.producto,Dispositivos.marca,Dispositivos.serie,Usuarios.nombre from Reportes inner join Dispositivos on Reportes.IDdevice = Dispositivos.ID inner join Usuarios on Reportes.IDusuario = Usuarios.ID where codigo = '" + id + "' order by fechareporte")
+            ServiceSQL.getConector().execute("select Reportes.ID,Reportes.IDreporte, Reportes.IDdevice,Reportes.IDusuario,Reportes.foto2,Reportes.fechareporte,Dispositivos.codigo,Dispositivos.producto,Dispositivos.marca,Dispositivos.serie,Usuarios.nombre,Reportes.foto2,comentario from Reportes inner join Dispositivos on Reportes.IDdevice = Dispositivos.ID inner join Usuarios on Reportes.IDusuario = Usuarios.ID where codigo = '" + id + "' order by fechareporte")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -127,7 +127,7 @@ class ReportDB():
     def getReportsbyname(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Reportes.ID,Reportes.IDreporte, Reportes.IDdevice,Reportes.IDusuario,Reportes.foto2,Reportes.fechareporte,Dispositivos.codigo,Dispositivos.producto,Dispositivos.marca,Dispositivos.serie,Usuarios.nombre from Reportes inner join Dispositivos on Reportes.IDdevice = Dispositivos.ID inner join Usuarios on Reportes.IDusuario = Usuarios.ID where producto = '" + id + "' order by fechareporte")
+            ServiceSQL.getConector().execute("select Reportes.ID,Reportes.IDreporte, Reportes.IDdevice,Reportes.IDusuario,Reportes.foto2,Reportes.fechareporte,Dispositivos.codigo,Dispositivos.producto,Dispositivos.marca,Dispositivos.serie,Usuarios.nombre,Reportes.foto2,comentario from Reportes inner join Dispositivos on Reportes.IDdevice = Dispositivos.ID inner join Usuarios on Reportes.IDusuario = Usuarios.ID where producto = '" + id + "' order by fechareporte")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 

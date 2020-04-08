@@ -34,7 +34,7 @@ def strselect(argumentos,cols):
 
     select = str(select)
 
-    select = "select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,fotomov1,fotomov2 from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID where "
+    select = "select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,tipomovimiento,fotomov1,fotomov2 from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID where "
 
     isfirst=False
     count = 0
@@ -73,7 +73,7 @@ def cmdinsert(table,objeto):
     valuelist = "("
     firstPair = True
     for key, value in objeto.items():
-        if key !='ID' and key !='fecha' and key!='fechamovimiento' and key!='lugar' and key!='codigo' and key!='producto' and key!='marca' and key!='modelo' and key!='nombre' and key!='Lugar' and key!='serie' and key!='statuscode' and key!='message' and key!='IDlugar' and key!='cantidad':
+        if key !='ID' and key !='fecha' and key!='fechamovimiento' and key!='lugar' and key!='codigo' and key!='producto' and key!='marca' and key!='modelo' and key!='nombre' and key!='Lugar' and key!='serie' and key!='statuscode' and key!='message' and key!='IDlugar' and key!='cantidad' and key!='tipomovimiento':
             if not firstPair:
                 keylist += ", "
                 valuelist += ", "
@@ -107,7 +107,7 @@ class HistorialDB():
     def getHistorial():
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,fotomov1,fotomov2 from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID order by fechamovimiento")
+            ServiceSQL.getConector().execute("select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,tipomovimiento,fotomov1,fotomov2 from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID order by fechamovimiento")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -151,7 +151,7 @@ class HistorialDB():
 
             strsel =strselect(listaargs,columnas)
 
-            print(strsel)
+            #print(strsel)
 
             ServiceSQL.getConector().execute(strsel)
             print("queried")
@@ -199,7 +199,7 @@ class HistorialDB():
                 
                 columns.append(r.column_name)
 
-            print(columns)
+            #print(columns)
             insert = cmdinsert("Movimientos",movimiento)
             #ServiceSQL.getConector().execute("INSERT INTO InventDB (ID,nombre,apellido_materno,apellido_paterno,contrasena,tipoUsuario,fechaContratacion,telefono,correo) VALUES ('" + usuario['ID'] + "','" + usuario['nombre'] + "','" + usuario['apellido_materno'] + "','" + usuario['apellido_paterno'] + "','" + usuario['contrasena'] + "','" + usuario['tipoUsuario'] + "','" + usuario['fechaContratacion'] + "','" + usuario['telefono'] + "','" + usuario['correo'] + "')")
             ServiceSQL.getConector().execute(insert)

@@ -27,6 +27,7 @@ from controllers import contreport
 from controllers import conthistorial
 from controllers import contRoles
 from controllers import contLugares
+from controllers import contTypemoves
 
 @app.route("/")
 def hello():
