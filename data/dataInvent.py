@@ -67,7 +67,7 @@ def cmdselect(argumentos,cols):
 
     select = str(select)
 
-    select = "select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where "
+    select = "select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where "
 
     isfirst=False
     count = 0
@@ -102,7 +102,7 @@ class InventDB():
     def getDevices():
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID order by codigo")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID order by codigo")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
             
@@ -142,7 +142,7 @@ class InventDB():
     def getDevicesbycode(id):
         #print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.codigo= '" + id + "' order by codigo")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.codigo= '" + id + "' order by codigo")
             #print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -175,7 +175,7 @@ class InventDB():
     def getDevicesbyname(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.producto= '" + id + "' ")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.producto= '" + id + "' ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -208,7 +208,7 @@ class InventDB():
     def getDevicesbyID(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.ID= " + id + " ")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.ID= " + id + " ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -242,7 +242,7 @@ class InventDB():
     def getDevicesbymarca(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.marca= '" + id + "' ")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.marca= '" + id + "' ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -276,7 +276,7 @@ class InventDB():
     def getDevicesbymodelo(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.modelo= '" + id + "' ")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.modelo= '" + id + "' ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -309,7 +309,7 @@ class InventDB():
     def getDevicesbyserie(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.serie= '" + id + "' ")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.serie= '" + id + "' ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -342,7 +342,7 @@ class InventDB():
     def getDevicesbyproveedor(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.proveedor= '" + id + "' ")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.proveedor= '" + id + "' ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 

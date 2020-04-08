@@ -179,6 +179,8 @@ class UserDB():
             ServiceSQL.getConector().execute("SELECT Usuarios.ID,Usuarios.nombre,Usuarios.apellido_paterno,Usuarios.apellido_materno,Usuarios.IDtipoUsuario,Usuarios.fecha,Usuarios.telefono,Usuarios.correo,Roles.rol,Usuarios.foto from Usuarios inner join Roles on Usuarios.IDtipoUsuario = Roles.ID where Usuarios.ID = " + name + "")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
+
+            
             
             if len(row) == 0:
                 return 1
