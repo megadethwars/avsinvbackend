@@ -169,6 +169,8 @@ def Putuser(name):
             elif status == 1:
 
                 return not_found('not found')
+            elif status == 3:
+                return conflict('conflicto')
 
             else:
 
@@ -180,7 +182,37 @@ def Putuser(name):
     except:
         return int_server('server error')
 
-   
+
+@app.route('/putpassword/<string:id>',methods = ['PUT'])
+def Putpass(id):
+    try:
+
+        if request.is_json:
+
+            content = request.json
+
+            status=UserDB.putpass(content,id)
+
+            if status == 0:
+                return ok_server_put('ok')
+
+            elif status == 1:
+
+                return not_found('not found')
+
+            else:
+
+                return int_server('server error')
+
+        else:
+            return bad_request('bad request')
+        
+    except:
+        return int_server('server error')
+
+
+
+
 
 @app.route('/deluser/<string:name>',methods = ['DELETE'])
 def deluser(name):

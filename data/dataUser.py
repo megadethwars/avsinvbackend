@@ -85,8 +85,11 @@ def cmdinsert(table,objeto):
             keylist += key
             if type(value) is str:
                 valuelist += "'" + value + "'"
-            else:
+            elif type(value) is int:
                 valuelist += str(value)
+            elif value is None:
+                valuelist += "'N/A'"
+
     keylist += ")"
     valuelist += ")"
 
@@ -105,8 +108,35 @@ def cmdupdate(table,objeto,name):
     valuelist = ""
     firstPair = True
     for key, value in objeto.items():
+       
+        if key !='ID' and key !='fecha' and key!='tipousuario' and key!='rol' and key!='password' and key!='statuscode' and key!='message':
+        
+            #print(key,value)
+            if type(value) is int:
+                valuelist+=key + " = "+ str(value) + ","
+            elif type(value) is str:
+                valuelist+=key + " = "+ "'" + value + "'" + ","
+            elif value is None:
+                valuelist+=key + " = "+ "'N/A'" + ","
+    
+    valuelist = valuelist[0:-1]
+    sqlstatement += "UPDATE " + TABLE_NAME + " SET " +valuelist + " WHERE ID = " +  "" + name + ""
+    #print(sqlstatement)
+    return sqlstatement
+
+
+def cmdupdatepass(table,objeto,name):
+    table = str(table)
+    TABLE_NAME = table
+
+    sqlstatement = ''
+
+    
+    valuelist = ""
+    firstPair = True
+    for key, value in objeto.items():
         print(key,value)
-        if key =='ID' or key =='fecha' or key=='tipousuario' or key=='rol' or key=='password' and key!='statuscode' and key!='message':
+        if key =='ID' or key =='fecha' or key=='tipousuario' or key=='rol' and key!='statuscode' and key!='message':
             a=1
         else:
             if type(value) is int:
@@ -290,9 +320,18 @@ class UserDB():
         try:
             ServiceSQL.getConector().execute("SELECT * from Usuarios where ID = " + name + "")
             row = ServiceSQL.getConector().fetchall()
-            
+            print('queried')
             if len(row) >= 0:
-
+                
+                # check if user by name already exist
+                # 
+                
+                ServiceSQL.getConector().execute("SELECT * from Usuarios where nombre = '" + usuario['nombre'] + "' and ID != " + name + " ")
+                row = ServiceSQL.getConector().fetchall()
+                print(len(row))
+                if(len(row)>0):
+                    return 3
+                #     
                 #update user
                 sqlupdate = cmdupdate("Usuarios",usuario,name)
 
@@ -307,7 +346,30 @@ class UserDB():
             print(e)
             return 2        
        
-                
+
+    @staticmethod
+    def putpass(usuario,id):
+        try:
+            ServiceSQL.getConector().execute("SELECT * from Usuarios where ID = " + id + "")
+            row = ServiceSQL.getConector().fetchall()
+            
+            if len(row) >= 0:
+
+                #update pass        
+                newpass = generate_password_hash(usuario['password'])
+
+                sqlupdate = "UPDATE Usuarios SET  password = '" + newpass + "'  WHERE ID = " + id + "" 
+
+                ServiceSQL.getConector().execute(sqlupdate)
+                ServiceSQL.getcnxn().commit()
+                print('updated')
+                return 0
+            else:
+                return 1
+    
+        except Exception as e:
+            print(e)
+            return 2
 
     @staticmethod
     def delUser(usuario):
