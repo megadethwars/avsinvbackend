@@ -214,3 +214,41 @@ class HistorialDB():
 
 
     
+
+    @staticmethod
+    def delhistorialByUser(id):
+        print("eliminando historial")
+        try:
+            ServiceSQL.getConector().execute("SELECT * from Movimientos where IDusuario = " + id + "")
+            row = ServiceSQL.getConector().fetchall()
+            
+            
+            if len(row) == 0:
+                return 1
+
+            data = []
+            
+
+            for r in row:
+                data.append([x for x in r])
+
+          
+            items = []
+            for item in row:
+                items.append(item[0])
+
+                
+            if item[0] > 0:
+
+                #delete user
+
+                ServiceSQL.getConector().execute("Delete from Movimientos WHERE IDusuario = " + id + "")
+                ServiceSQL.getcnxn().commit()
+                print('deleted')
+                return 0
+            else:
+                return 1
+    
+        except:
+            print('server error')
+            return 2

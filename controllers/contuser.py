@@ -214,11 +214,11 @@ def Putpass(id):
 
 
 
-@app.route('/deluser/<string:name>',methods = ['DELETE'])
-def deluser(name):
+@app.route('/deluser/<string:id>',methods = ['DELETE'])
+def deluser(id):
     try:
           
-        status=UserDB.delUser(name)
+        status=UserDB.delUser(id)
 
         if status == 0:
             return ok_server_put('ok')
@@ -227,13 +227,17 @@ def deluser(name):
 
             return not_found('not found')
 
-        else:
+        elif status == 2:
 
             return int_server('server error')
+        
+        else:
+            return conflict('Conflicto al borrar')
   
     except:
         return int_server('server error')
         
+
 
 @app.route('/loginpre', methods=['GET', 'POST'])
 def loginpre():

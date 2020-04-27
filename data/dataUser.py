@@ -4,6 +4,8 @@ from data.Service import ServiceSQL
 import traceback
 from datetime import date, datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from .datahistorial import HistorialDB
+from .dataReport import ReportDB
 
 def strinsert(table,cols,obj):
 
@@ -372,13 +374,19 @@ class UserDB():
             return 2
 
     @staticmethod
-    def delUser(usuario):
-        print(usuario)
+    def delUser(id):
+        print(id)
         try:
-            ServiceSQL.getConector().execute("SELECT * from Usuarios where nombre = '" + usuario + "'")
+            ServiceSQL.getConector().execute("SELECT * from Usuarios where ID = " + id + "")
             row = ServiceSQL.getConector().fetchall()
-            print(row)
+            
+
+            if len(row) == 0:
+                return 1
+
             data = []
+
+            
             
             for r in row:
                 data.append([x for x in r])
@@ -393,15 +401,29 @@ class UserDB():
 
                 #delete user
 
-                ServiceSQL.getConector().execute("Delete from Usuarios WHERE nombre = '" + usuario + "'")
-                ServiceSQL.getcnxn().commit()
-                print('deleted')
-                return 0
+                # first of all check for historial an reports
+
+                resreport = ReportDB.delReportsByUser(id)
+
+                reshist = HistorialDB.delhistorialByUser(id)
+
+                if(resreport !=2 and reshist!=2):
+
+
+                    ServiceSQL.getConector().execute("Delete from Usuarios WHERE ID = " + id + "")
+                    ServiceSQL.getcnxn().commit()
+                    print('deleted')
+
+                    return 0
+
+                else:
+                    return 3
+
             else:
                 return 1
     
-        except:
-            print('server error')
+        except Exception as e:
+            print(e)
             return 2 
             
     
