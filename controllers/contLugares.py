@@ -56,13 +56,16 @@ def PostLugar():
 
             if status == 0:
                 return Httpstatus.ok_server_post()
-            else:
+            elif status == 2:
                 return Httpstatus.int_server('server error')
+            elif status == 1:
+                return Httpstatus.conflict('Conflicto')
         
         else:
             return Httpstatus.bad_request('bad request')
 
-    except:        
+    except Exception as e:
+        print(e)        
         return Httpstatus.int_server('server error')
 
 

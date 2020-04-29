@@ -68,13 +68,29 @@ class LugarDB():
     def postLugar(objeto):
         print(objeto)
         try:
-            cmdinsert = "insert into Lugares values ('" + objeto['Lugar'] + "')"
-            print(cmdinsert)
-            ServiceSQL.getConector().execute(cmdinsert)
-            ServiceSQL.getcnxn().commit()
-            return 0
-        except ValueError:
-            print(ValueError)
+            ServiceSQL.getConector().execute("SELECT count(*) from Lugares where Lugar = '" + objeto['Lugar'] + "'")
+            row = ServiceSQL.getConector().fetchall()
+            #print(row)
+            data = []
+            
+            for r in row:
+                data.append([x for x in r])
+        
+            items = []
+            for item in row:
+                items.append(item[0])
+         
+            if items[0] == 0:
+
+                cmdinsert = "insert into Lugares(Lugar) values ('" + objeto['Lugar'] + "')"
+                print(cmdinsert)
+                ServiceSQL.getConector().execute(cmdinsert)
+                ServiceSQL.getcnxn().commit()
+                return 0
+            else:
+                return 1
+        except Exception as e:
+            print(e)
             return 2
 
     
