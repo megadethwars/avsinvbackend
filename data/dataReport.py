@@ -265,3 +265,39 @@ class ReportDB():
         except Exception as e:
             print(e)
             return 2
+
+
+
+    @staticmethod
+    def delReportsBydevice(id):
+        print("eliminando reportes")
+        try:
+            ServiceSQL.getConector().execute("SELECT * from Reportes where IDdevice = " + id + "")
+            row = ServiceSQL.getConector().fetchall()
+            
+            data = []
+
+            if len(row) == 0:
+                return 1
+            
+            for r in row:
+                data.append([x for x in r])
+          
+            items = []
+            for item in row:
+                items.append(item[0])
+               
+            if item[0] > 0:
+
+                #delete resports
+
+                ServiceSQL.getConector().execute("Delete from Reportes WHERE IDdevice = " + id + "")
+                ServiceSQL.getcnxn().commit()
+                print('deleted')
+                return 0
+            else:
+                return 1
+    
+        except Exception as e:
+            print(e)
+            return 2

@@ -292,13 +292,12 @@ def PutDevice(name):
         print(e)
         return int_server('server error')
 
-   
-
-@app.route('/deldevice/<string:name>',methods = ['DELETE'])
-def deldevice(name):
+      
+@app.route('/deldevice/<string:id>',methods = ['DELETE'])
+def deldevice(id):
     try:
           
-        status=InventDB.delDevice(name)
+        status=InventDB.delDevice(id)
 
         if status == 0:
             return Httpstatus.ok_server_put('ok')
@@ -307,12 +306,12 @@ def deldevice(name):
 
             return Httpstatus.not_found('not found')
 
-        else:
+        elif status == 2:
 
             return Httpstatus.int_server('server error')
+        
+        else:
+            return Httpstatus.conflict('Conflicto al borrar')
   
     except:
         return Httpstatus.int_server('server error')
-        
-
-
