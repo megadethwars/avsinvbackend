@@ -2,6 +2,8 @@ from data.Service import ServiceSQL
 import json
 import traceback
 from datetime import date, datetime
+from .datahistorial import HistorialDB
+from .dataReport import ReportDB
 
 def cmdinsert(table,objeto):
     table = str(table)
@@ -533,25 +535,55 @@ class InventDB():
                 
 
     @staticmethod
-    def delDevice(codigo):
-        print(codigo)
+    def delDevice(id):
+        print(id)
         try:
-            ServiceSQL.getConector().execute("SELECT * from InventDB where codigo = '" + codigo + "'")
+            ServiceSQL.getConector().execute("SELECT * from Dispositivos where ID = " + id + "")
             row = ServiceSQL.getConector().fetchall()
-            print(len(row))
-            if len(row) > 0:
+            
+
+            if len(row) == 0:
+                return 1
+
+            data = []
+
+                       
+            for r in row:
+                data.append([x for x in r])
+
+          
+            items = []
+            for item in row:
+                items.append(item[0])
+
+                
+            if item[0] > 0:
 
                 #delete user
 
-                ServiceSQL.getConector().execute("Delete from InventDB WHERE codigo = '" + codigo + "'")
-                ServiceSQL.getcnxn().commit()
-                print('deleted')
-                return 0
+                # first of all check for historial an reports
+                
+                resreport = ReportDB.delReportsBydevice(id)
+            
+                reshist = HistorialDB.delhistorialByDevice(id)
+
+                if(resreport !=2 and reshist!=2):
+
+
+                    ServiceSQL.getConector().execute("Delete from Dispositivos WHERE ID = " + id + "")
+                    ServiceSQL.getcnxn().commit()
+                    print('deleted')
+
+                    return 0
+
+                else:
+                    return 3
+
             else:
                 return 1
     
-        except:
-            print('server error')
+        except Exception as e:
+            print(e)
             return 2 
             
     

@@ -386,8 +386,7 @@ class UserDB():
 
             data = []
 
-            
-            
+                       
             for r in row:
                 data.append([x for x in r])
 
