@@ -495,11 +495,7 @@ class InventDB():
 
             else:
                 return 1
-
-
             
-
-
             return 0
         except Exception as e:
             print(e)
@@ -557,7 +553,7 @@ class InventDB():
                 items.append(item[0])
 
                 
-            if item[0] > 0:
+            if len(items) > 0:
 
                 #delete user
 
@@ -585,6 +581,57 @@ class InventDB():
         except Exception as e:
             print(e)
             return 2 
+
+
+    
+    @staticmethod
+    def ValidateSamePlaces(data):
+
+        try:
+            idlugarActual=0
+            idlugarpas=0
+            isfirst = True
+            
+            for key, value in data.items():
+                strsel ="select IDlugar from Dispositivos where ID = "
+                if type(value) is int:
+
+                    strsel+=  str(value)
+                elif type(value) is str:
+
+                    strsel+="'" + value + "'"
+                elif value is None:
+                    strsel+="'None'"
+
+                print(strsel)
+
+                ServiceSQL.getConector().execute(strsel)
+                #ServiceSQL.getcnxn().commit()
+                row = ServiceSQL.getConector().fetchall()
+                strsel=""
+                items = []
+                for item in row:
+                    items.append(item[0])
+                
+                if len(items) > 0:
+                    
+                    if isfirst:
+                        isfirst = False
+                        idlugarpas = int(items[0])
+                    else:
+                        idlugarActual = int(items[0])
+
+                        if idlugarActual != idlugarpas:
+                            return 2
+               
+                else:
+                    return 1
+
+            return 0
+
+        except Exception as e:
+            print(e)
+            return 3
             
     
     

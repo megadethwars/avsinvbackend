@@ -74,6 +74,27 @@ def GetMovementsbysearch():
         return Httpstatus.int_server('server error')
 
 
+@app.route('/searchmissing/<id>')
+def searchmissing(id):
+    try:
+        
+        if id is None:
+            return Httpstatus.bad_request('bad request')
+
+        data = HistorialDB.SearchMissingEntries(id)
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+        elif data == 1:
+            return Httpstatus.not_found('not found')
+
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return Httpstatus.int_server('server error')
+
+
 
 @app.route('/postmove', methods = ['POST'])
 def PostHistorial():

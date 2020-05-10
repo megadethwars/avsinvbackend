@@ -251,17 +251,6 @@ def PostDevice():
 
 
 
-    #print (request.is_json)
-    #content = request.get_json()
-    
-    #if request.is_json:
-    #    status = UserDB.postUser(content)
-
-    ##starting to create user to sql
-    #return 'OK', 201
-
-
-
 
 @app.route('/putdevice/<string:name>',methods = ['PUT'])
 def PutDevice(name):
@@ -314,4 +303,32 @@ def deldevice(id):
             return Httpstatus.conflict('Conflicto al borrar')
   
     except:
+        return Httpstatus.int_server('server error')
+
+
+
+@app.route('/validatesamedevices', methods = ['POST'])
+def ValidateSame():
+
+    try:
+        print(request.is_json)
+        if request.is_json:
+            content = request.get_json()
+            
+            status = InventDB.ValidateSamePlaces(content)
+
+            if status == 0:
+                return Httpstatus.ok_server_post()
+            elif status==2:
+                return Httpstatus.conflict('not the same')
+            elif status == 1:
+                return Httpstatus.not_found('not found')
+
+            else:
+                return Httpstatus.int_server('server error')
+        
+        else:
+            return Httpstatus.bad_request('bad request')
+
+    except:        
         return Httpstatus.int_server('server error')
