@@ -151,7 +151,7 @@ class HistorialDB():
 
             strsel =strselect(listaargs,columnas)
 
-            #print(strsel)
+            print(strsel)
 
             ServiceSQL.getConector().execute(strsel)
             print("queried")

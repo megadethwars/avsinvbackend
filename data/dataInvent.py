@@ -144,7 +144,7 @@ class InventDB():
     def getDevicesbycode(id):
         #print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.codigo= '" + id + "' order by codigo")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar,IDmov from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.codigo= '" + id + "' order by codigo")
             #print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -168,8 +168,8 @@ class InventDB():
             datos = json.dumps(filas)
             
             return datos
-        except ValueError:
-            print('error sql')
+        except Exception as e:
+            print(e)
             return 2
 
 
@@ -210,7 +210,7 @@ class InventDB():
     def getDevicesbyID(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.ID= " + id + " ")
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar,IDmov from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.ID= " + id + " ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -635,6 +635,37 @@ class InventDB():
             
     
     
+    @staticmethod
+    def getDevicesMissing(id):
+        print("starting")
+        try:
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar,IDmov from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.IDmov= '" + id + "' ")
+            print("queried")
+            row = ServiceSQL.getConector().fetchall()
+
+            if len(row) == 0:
+                return 1
+
+            rows = [x for x in row]
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            filas = []
+            for row in rows:
+                fila = {}
+                for prop, val in zip(cols, row):
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
+
+                filas.append(fila)
+
+            print(filas)
+            datos = json.dumps(filas)
+            
+            return datos
+        except ValueError:
+            print('error sql')
+            return 2
         
 
 

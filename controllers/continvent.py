@@ -332,3 +332,24 @@ def ValidateSame():
 
     except:        
         return Httpstatus.int_server('server error')
+
+
+
+@app.route('/missingdevices/<name>')
+def SearchMissing(name):
+    try:
+        data = InventDB.getDevicesMissing(name)
+
+        if data == 1:
+            return Httpstatus.not_found('not found')
+
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+
+          
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return Httpstatus.int_server('server error')
