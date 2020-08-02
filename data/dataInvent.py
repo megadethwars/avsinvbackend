@@ -177,7 +177,8 @@ class InventDB():
     def getDevicesbyname(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.producto= '" + id + "' ")
+            
+            ServiceSQL.getConector().execute("select Dispositivos.ID,codigo,producto,marca,fecha,modelo,foto,cantidad,observaciones,IDlugar,pertenece,descompostura,costo,compra,serie,proveedor,Lugares.lugar,origen,Dispositivos.IDlugar from Dispositivos inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Dispositivos.producto like  '" + id + "%' ")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
