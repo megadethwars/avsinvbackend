@@ -141,6 +141,45 @@ class HistorialDB():
             print(e)
             return 2
 
+
+    @staticmethod
+    def getHistorialbyID(id):
+        print("starting")
+        try:
+            ServiceSQL.getConector().execute("select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,tipomovimiento,fotomov1,fotomov2,cantidad from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Movimientos.IDmovimiento like '" + id + "%' order by fechamovimiento")
+            print("queried")
+            row = ServiceSQL.getConector().fetchall()
+
+            if len(row) == 0:
+                return 1
+
+            rows = [x for x in row]
+            
+            cols = [x[0] for x in ServiceSQL.getConector().description]
+            
+            filas = []
+            for row in rows:
+                
+                fila = {}
+                for prop, val in zip(cols, row):
+                    #print(prop,val)
+                    if isinstance(val, (datetime, date)):
+                        fila[prop] = val.isoformat()
+                    else:
+                        fila[prop] = val
+                    
+                    #print(fila)
+
+                filas.append(fila)
+
+            
+            datos = json.dumps(filas)
+            
+            return datos
+        except Exception as e:
+            print(e)
+            return 2
+
     
     @staticmethod
     def getHistorialbysearch(listaargs):

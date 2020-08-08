@@ -25,6 +25,25 @@ def GetMovements():
         return Httpstatus.int_server('server error')
 
 
+@app.route('/moves/<id>')
+def GetMovementsbyId(id):
+
+    try:
+        
+        data = HistorialDB.getHistorialbyID(id)
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+        elif data == 1:
+            return Httpstatus.not_found('not found')
+
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return Httpstatus.int_server('server error')
+
+
 @app.route('/movesearch')
 def GetMovementsbysearch():
 
