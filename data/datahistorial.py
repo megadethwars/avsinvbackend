@@ -34,7 +34,7 @@ def strselect(argumentos,cols):
 
     select = str(select)
 
-    select = "select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,tipomovimiento,fotomov1,fotomov2,cantidad from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID where "
+    select = "select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.IDdevice,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,tipomovimiento,fotomov1,fotomov2,cantidad from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID where "
 
     isfirst=False
     count = 0
@@ -107,7 +107,7 @@ class HistorialDB():
     def getHistorial():
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,tipomovimiento,fotomov1,fotomov2,cantidad from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID order by fechamovimiento")
+            ServiceSQL.getConector().execute("select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.IDdevice,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,tipomovimiento,fotomov1,fotomov2,cantidad from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID order by fechamovimiento")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -146,7 +146,7 @@ class HistorialDB():
     def getHistorialbyID(id):
         print("starting")
         try:
-            ServiceSQL.getConector().execute("select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,tipomovimiento,fotomov1,fotomov2,cantidad from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Movimientos.IDmovimiento like '" + id + "%' order by fechamovimiento")
+            ServiceSQL.getConector().execute("select Movimientos.ID,Movimientos.IDmovimiento,Movimientos.IDtipomov,Movimientos.IDusuario,Movimientos.IDdevice,Movimientos.fechamovimiento,Dispositivos.codigo,Dispositivos.producto,Dispositivos.serie,Dispositivos.marca,Dispositivos.modelo,Dispositivos.IDlugar,Usuarios.nombre,Lugares.Lugar,observacionesMov,tipomovimiento,fotomov1,fotomov2,cantidad from Movimientos inner join Dispositivos on Movimientos.IDdevice = Dispositivos.ID inner join Moves on Movimientos.IDtipomov = Moves.ID inner join Usuarios on Movimientos.IDusuario = Usuarios.ID inner join Lugares on Dispositivos.IDlugar = Lugares.ID where Movimientos.IDmovimiento like '" + id + "%' order by fechamovimiento")
             print("queried")
             row = ServiceSQL.getConector().fetchall()
 
@@ -357,6 +357,46 @@ class HistorialDB():
                 #delete user
 
                 ServiceSQL.getConector().execute("Delete from Movimientos WHERE IDdevice = " + id + "")
+                ServiceSQL.getcnxn().commit()
+                print('deleted')
+                return 0
+            else:
+                return 1
+    
+        except:
+            print('server error')
+            return 2
+
+
+    
+    @staticmethod
+    def delhistorialByID(id):
+        print("eliminando historial")
+        try:
+            ServiceSQL.getConector().execute("SELECT * from Movimientos where ID = " + id + "")
+            row = ServiceSQL.getConector().fetchall()
+            
+            
+            if len(row) == 0:
+                return 1
+
+            data = []
+            
+
+            for r in row:
+                data.append([x for x in r])
+
+          
+            items = []
+            for item in row:
+                items.append(item[0])
+
+                
+            if item[0] > 0:
+
+                #delete user
+
+                ServiceSQL.getConector().execute("Delete from Movimientos WHERE ID = " + id + "")
                 ServiceSQL.getcnxn().commit()
                 print('deleted')
                 return 0

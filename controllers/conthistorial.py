@@ -136,3 +136,27 @@ def PostHistorial():
 
     except:        
         return Httpstatus.int_server('server error')
+
+
+@app.route('/delmove/<string:id>',methods = ['DELETE'])
+def delhistorial(id):
+    try:
+          
+        status=HistorialDB.delhistorialByID(id)
+
+        if status == 0:
+            return Httpstatus.ok_server_put('ok')
+
+        elif status == 1:
+
+            return Httpstatus.not_found('not found')
+
+        elif status == 2:
+
+            return Httpstatus.int_server('server error')
+        
+        else:
+            return Httpstatus.conflict('Conflicto al borrar')
+  
+    except:
+        return Httpstatus.int_server('server error')
