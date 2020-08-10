@@ -25,6 +25,25 @@ def GetMovements():
         return Httpstatus.int_server('server error')
 
 
+@app.route('/moves/<id>')
+def GetMovementsbyId(id):
+
+    try:
+        
+        data = HistorialDB.getHistorialbyID(id)
+
+        if data == 2:
+            return Httpstatus.int_server('server error')
+        elif data == 1:
+            return Httpstatus.not_found('not found')
+
+        return data,200, {'ContentType':'application/json'}
+
+    except:
+        print("error")
+        return Httpstatus.int_server('server error')
+
+
 @app.route('/movesearch')
 def GetMovementsbysearch():
 
@@ -116,4 +135,28 @@ def PostHistorial():
             return Httpstatus.bad_request('bad request')
 
     except:        
+        return Httpstatus.int_server('server error')
+
+
+@app.route('/delmove/<string:id>',methods = ['DELETE'])
+def delhistorial(id):
+    try:
+          
+        status=HistorialDB.delhistorialByID(id)
+
+        if status == 0:
+            return Httpstatus.ok_server_put('ok')
+
+        elif status == 1:
+
+            return Httpstatus.not_found('not found')
+
+        elif status == 2:
+
+            return Httpstatus.int_server('server error')
+        
+        else:
+            return Httpstatus.conflict('Conflicto al borrar')
+  
+    except:
         return Httpstatus.int_server('server error')
